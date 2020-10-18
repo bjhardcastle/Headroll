@@ -1,5 +1,5 @@
 plotname = 'bode';
-savename = [plotnames.(plotname) '_' flyname ];
+
 
 freqs = roundn(stimfreqs,-2);
 gainplot_pos = [0.15 0.55 0.8 0.38];
@@ -8,9 +8,10 @@ phaseplot_pos = [0.15 0.123 0.8 0.38];
 
 plot_individual_gains_phases = 0; % 'Step_G' data not checked
 
-if bodelogXplot 
+
+if bodelogXplot
     freqs = log10(freqs);
-    logXlims = [-1.6,1.5];
+    logXlims = [-1.38,1.5];
     xTickFreqs = unique(log10([0.01:0.01:0.1,0.1:0.1:1,1:1:10,10:10:100]));
     xTickFreqs = xTickFreqs(xTickFreqs>logXlims(1) & xTickFreqs<logXlims(2));
     xTickLabels = strrep(cellstr(num2str(xTickFreqs')),' ','');
@@ -46,7 +47,7 @@ for c = 1:length(condSelect)
         gainplot=subplot('Position',gainplot_pos);
     else
         gainplot = gca;
-    end    
+    end
     hold on
     
     lineprops.col = {bodecolor_mat{cidx}};
@@ -66,17 +67,24 @@ for c = 1:length(condSelect)
     end
 end
 
+ytickinterval = 0.5;
+ylim1 = 0;
+ylim2 = 1.8;
+
 if bodelogXplot
     xlim(logXlims)
 else
     xlim([-0.5 25.5])
 end
+
+
 if bodeplotdb
     ylabel('Gain (dB)')
     xlim([-0.5 25.5])
 else
-    ylim([0, 1.5])
+    ylim([ylim1, ylim2])
     gainplot.YLim(1) = gainplot.YLim(1) - 0.1*range(gainplot.YLim);
+    set(gainplot,'YTick',sort(unique([0:ytickinterval:ylim2,0:-ytickinterval:ylim1])))
     ylabel('Gain (a.u.)')
 end
 % set(gca,'box','on')
@@ -89,22 +97,21 @@ if ~bodesubplots
     if bodelogXplot
         set(gainplot,'XTickLabel',xTickLabels)
     end
-
+    
 else
     set(gainplot,'XTick',xTickFreqs,'XTickLabel',[])
     % title(['Frequency response: e.aeneus'])
 end
 
 if bodelogXplot
-    dr =  1.5/3.1;
+    dr =   range([gainplot.YTick(1),gainplot.YTick(end)])/range(logXlims);
     daspect(gainplot,[1,2*dr,1])
     offsetAxesLogX(gainplot)
 else
-    dr =  1.5/25;
+    dr =  [gainplot.YTick(1),gainplot.YTick(end)]/25;
     daspect(gainplot,[1,2*dr,1])
     offsetAxes(gainplot)
 end
-setHRaxes(gainplot,3,6)
 
 if nanmax(N_array)==nanmin(N_array)
     suffix = ['_N=' num2str(nanmax(N_array))];
@@ -112,14 +119,28 @@ else
     suffix = ['_N=' num2str(nanmin(N_array)) 'to' num2str(nanmax(N_array))];
 end
 
+
 if ~bodesubplots
     
-    tightfig(gcf)
-    savename = [plotname '_gain'];
+    gainplotaxpos = gainplot.Position;
+    gainplot.XLabel.String = '';
+    gainplot.XTickLabel = {};
+    setHRaxes(gainplot,[],5)
+    set(gcf,'Units','centimeters')
+    set(gcf,'PaperUnits','centimeters')
+    set(gcf,'Position',[0 0 7 5])
+    set(gcf,'PaperPosition',[0 0 7 5])
+    set(gcf,'PaperSize',[7 5])
+
     if bodeprintflag
+        savename = [plotnames.(plotname) '_' flyname '_gain'];
         printHR
     end
     figure
+else
+    setHRaxes(gainplot,3,6)
+    tightfig(gcf)
+    
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -139,9 +160,9 @@ for c = 1:length(condSelect)
         phaseplot = gca;
     end
     lineprops.col = {bodecolor_mat{cidx}};
-     
+    
     hold on
-      
+    
     if bodeshadederror
         h2{cidx} = mseb(freqs,CLpm,CLps,lineprops,1);
     else
@@ -173,13 +194,6 @@ l = legend(legLines,{legCell{condSelect}});
 
 ylabel('Phase (\circ)')
 xlabel('Frequency (Hz)')
-if bodelogXplot
-    xlim(logXlims)
-    set(phaseplot,'XTick',xTickFreqs,'XTickLabel',xTickLabels)
-else
-    xlim([-0.5 25.5])
-    set(phaseplot,'XTick',xTickFreqs)
-end
 
 ytickinterval = 60;
 ylim1 = -240;
@@ -189,6 +203,13 @@ set(phaseplot,'YTick',sort(unique([0:ytickinterval:ylim2,0:-ytickinterval:ylim1]
 ylim([ylim1 ylim2])
 phaseplot.YLim(1) = phaseplot.YLim(1) - 0.1*range(phaseplot.YLim);
 
+if bodelogXplot
+    xlim(logXlims)
+    set(phaseplot,'XTick',xTickFreqs,'XTickLabel',xTickLabels)
+else
+    xlim([-0.5 25.5])
+    set(phaseplot,'XTick',xTickFreqs)
+end
 
 if ~bodesubplots
     title(' ')
@@ -197,30 +218,39 @@ if ~bodesubplots
     if bodelogXplot
         set(phaseplot,'XTickLabel',xTickLabels)
     end
-
+    
 else
     set(phaseplot,'XTick',xTickFreqs,'XTickLabel',[])
     % title(['Frequency response: e.aeneus'])
 end
 
 if bodelogXplot
-    dr =  range([ylim1,ylim2])/3.1;
+    dr =  range([phaseplot.YTick(1),phaseplot.YTick(end)])/range(logXlims);
     daspect(phaseplot,[1,2*dr,1])
     offsetAxesLogX(phaseplot)
 else
-    dr =  range([ylim1,ylim2])/25;
+    dr =  range([phaseplot.YTick(1),phaseplot.YTick(end)])/25;
     daspect(phaseplot,[1,2*dr,1])
     offsetAxes(phaseplot)
 end
 
-setHRaxes(phaseplot,3,6)
 if bodesubplots
     set(l,'Location','best','box', 'off')
+    setHRaxes(phaseplot,3,6)
+    tightfig(gcf)
+    
 else
     delete(l)
+    setHRaxes(phaseplot,[],5)
+    set(gcf,'Units','centimeters')
+    set(gcf,'PaperUnits','centimeters')
+    set(gcf,'Position',[0 0 7 5])
+    set(gcf,'PaperPosition',[0 0 7 5])
+    set(gcf,'PaperSize',[7 5 ])
+
+
 end
-tightfig(gcf)
-savename = [plotname '_phase'];
+savename = [plotnames.(plotname) '_' flyname '_phase'];
 
 if bodeprintflag
     printHR

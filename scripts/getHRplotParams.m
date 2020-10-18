@@ -146,6 +146,7 @@ bodeprintflag = 1;
 modelrerun = 0;
 
 %% Plot aesthetics ** 
+pdfbkgTransparent = 1;
 defaultAxisHeight_cm = 5;
 defaultImageHeight_cm = 5;
 defaultAxisWidth_cm = 5;

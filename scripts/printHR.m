@@ -46,7 +46,11 @@ set(gcf,'PaperUnits','centimeters')
 figPos = get(gcf,'Position');
 set(gcf,'PaperPosition',[0 0 figPos(3:4)])
 %set(gcf,'color','none');
-set(gcf,'color','white');
+if ~pdfbkgTransparent
+    set(gcf,'color','white');
+else
+    set(gcf,'color','none');
+end
 % second (good) call overwriting the first:
 print(gcf, fullSavePath , '-dpdf','-painters');
 

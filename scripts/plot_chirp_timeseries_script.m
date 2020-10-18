@@ -1,5 +1,5 @@
-printpath = '..\plots\';
-savename = ['chirp_timeseries_' flyname ];
+plotname = 'chirpTimeseries';
+savename = [plotnames.(plotname) '_' flyname ];
 
 fps = cond(condSelect).framerates;
 

@@ -19,8 +19,7 @@ else
 end
 
 getHRplotParams
-printpath = '..\plots\';
-plotname = 'bode_cv';
+flyname = 'cv';
 
 condSelect = [1,2];
 % condSelect = [1];
@@ -51,8 +50,7 @@ else
 end
 
 getHRplotParams
-printpath = '..\plots\';
-plotname = 'bode_tb';
+flyname = 'tb';
 
 condSelect = [1,3];
 % condSelect = [1];
@@ -86,8 +84,7 @@ end
 % resp_gain_mean(7,:,:,:) = NaN;
 
 getHRplotParams
-printpath = '..\plots\';
-plotname = 'bode_ea';
+flyname = 'ea';
 
 condSelect = [2,3];
 % condSelect = [1];

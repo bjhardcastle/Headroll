@@ -16,7 +16,6 @@ getHRplotParams
 % end
 
 getHRplotParams
-printpath = '..\plots\';
 flyname = 'cv';
 
 % condSelect = [1,2];
@@ -47,7 +46,6 @@ getHRplotParams
 % end
 
 getHRplotParams
-printpath = '..\plots\';
 flyname = 'tb';
 
 % condSelect = [1,3];
@@ -78,7 +76,6 @@ load('..\mat\DATA_ea_chirp');
 % end
 
 getHRplotParams
-printpath = '..\plots\';
 flyname = 'ea';
 
 % condSelect = [1,3];
@@ -110,7 +107,6 @@ load('..\mat\DATA_eb_chirp');
 % end
 
 getHRplotParams
-printpath = '..\plots\';
 flyname = 'eb';
 
 condSelect = [1];
@@ -140,7 +136,6 @@ clearvars
 getHRplotParams
 load('..\mat\DATA_model_chirp');
 
-printpath = '..\plots\';
 flyname = 'model';
 
 condSelect = [1];

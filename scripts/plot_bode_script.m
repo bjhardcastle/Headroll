@@ -1,3 +1,5 @@
+plotname = 'bode';
+savename = [plotnames.(plotname) '_' flyname ];
 
 freqs = roundn(stimfreqs,-2);
 gainplot_pos = [0.15 0.55 0.8 0.38];
@@ -128,7 +130,7 @@ for c = 1:length(condSelect)
     
     CLp=squeeze(resp_phase_mean(:,:,:,cidx));
     CLpm = circ_mean(CLp*pi/180,[],1)*180/pi;
-%     CLpm(CLpm > 60) = -360+CLpm(CLpm>60);
+    CLpm(CLpm > 90) = -360+CLpm(CLpm>90);
     CLps = (circ_std(CLp*pi/180,[],[],1)*180/pi)./sqrt(N_array);
     
     if bodesubplots

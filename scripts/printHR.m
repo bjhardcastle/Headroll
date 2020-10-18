@@ -9,6 +9,8 @@ elseif ~strcmp('_',prefix(end))
     prefix = [prefix '_'];
 end
 
+panelHR  % if part of a multipanel figure, do some extra formatting
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % % PNG
 if ~exist(fullfile(printpath,'png'),'dir')

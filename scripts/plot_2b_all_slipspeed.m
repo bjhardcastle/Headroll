@@ -16,7 +16,6 @@ else
 end
 
 getHRplotParams
-printpath = '..\plots\';
 flyname = 'cv';
 
 condSelect = [1,2];
@@ -47,7 +46,6 @@ else
 end
 
 getHRplotParams
-printpath = '..\plots\';
 flyname = 'tb';
 
 condSelect = [1,3];
@@ -80,7 +78,6 @@ end
 % resp_gain_mean(7,:,:,:) = NaN;
 
 getHRplotParams
-printpath = '..\plots\';
 flyname = 'ea';
 
 condSelect = [2,3];
@@ -112,7 +109,6 @@ clearvars
 getHRplotParams
 load('..\mat\DATA_model_fixed_sines');
 
-printpath = '..\plots\';
 flyname = 'model';
 
 condSelect = [1,1];

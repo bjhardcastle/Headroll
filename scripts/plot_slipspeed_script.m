@@ -1,6 +1,5 @@
-
-printpath = '..\plots\';
-savename = ['slipspeed_pdf_' flyname ];
+plotname = 'slipspeedPDF';
+savename = [plotnames.(plotname) '_' flyname ];
 
 plotfreqs = [1,3,6,10,15,20,25];
 freqs = find(ismember(round(stimfreqs,1),plotfreqs));
@@ -209,11 +208,12 @@ end
 %% PLOT MODE SLIPSPEEDS
 
 if modeplot
-    savename = ['slipspeed_mode_' flyname];
+    plotname =  'slipspeedMode';
 else
-    savename = ['slipspeed_median_' flyname];
+    plotname =  'slipspeedMedian';
     manualstim = 0;
 end
+savename = [plotnames.(plotname) '_' flyname ];
 
 N_array = nan(1,length(plotfreqs));
 for fIdx = 1:length(plotfreqs)

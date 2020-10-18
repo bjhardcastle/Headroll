@@ -2,6 +2,7 @@
 % consistent changes 
 thisfilepath = mfilename('fullpath'); 
 rootpathHR = fullfile(fileparts(thisfilepath));
+printpath = fullfile(fileparts(rootpathHR),'plots');
 
 %% Colors %%
 
@@ -97,6 +98,26 @@ cv_col =  [212 81 0]./255;
 % Plot size
 plotsize_square_half = [103 141 300 240];
 plotsize_bode=[   208 295 400 325];
+%%
+
+plotnames = struct;
+plotnames.slipspeedPDF = 'slipspeed_pdf';
+plotnames.slipspeedMode = 'slipspeed_mode';
+plotnames.slipspeedMedian = 'slipspeed_median';
+plotnames.chirpTimeseries = 'chirp_timeseries';
+plotnames.bode = 'bode';
+
+%%
+HRpanelOrder = {'cv';'tb';'ea'}; % for composite figs where plots are presented together we can save some time formatting in matlab 
+panelflag = 1; % toggle off to leave all axes intact
+
+panellayout = struct;
+panellayout.slipspeedPDF = 'vertical';
+panellayout.slipspeedMode = 'horizontal';
+panellayout.slipspeedMedian = 'horizontal';
+panellayout.chirpTimeseries = 'vertical';
+panellayout.bode = 'horizontal';
+
 
 
 %% slipspeed mode/median plot options
@@ -108,7 +129,7 @@ manualstim=1;
 
 
 %% bode plot options
-bodererun = 1; % re-run analysis and save data
+bodererun = 0; % re-run analysis and save data
 bodefilterflag = 0; % run additional low freq filter during analysis
 
 bode_rel_first = 1; % 1, subtract HR from TR before calculating gain/phase; 0, calc phase, then subtract and find gain 
@@ -116,10 +137,10 @@ bode_rel_first = 1; % 1, subtract HR from TR before calculating gain/phase; 0, c
 bodelogXplot = 1; 
 bodeplotdb = 0; 
 bodeshadederror = 0; 
-bodesubplots = 1; %1, gain+phase plots in one fig; 0, separate figs
+bodesubplots = 0; %1, gain+phase plots in one fig; 0, separate figs
 bodecheckplots = 0; % 1, plot individual time-series when aligning/removing pre-stim/refstim
 
-bodeprintflag = 0;
+bodeprintflag = 1;
 
 %% Model functions **
 modelrerun = 0;

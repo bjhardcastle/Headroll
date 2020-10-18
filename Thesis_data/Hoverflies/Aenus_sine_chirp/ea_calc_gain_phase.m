@@ -47,19 +47,19 @@ for step = 1:num_steps
     phase(step) = -( phaseIdx-1 ) / stimperiod * 2 * pi;                 % Estimate response shift in radians.
     
     
-    if phase(step) < -4.7                                                  % Unwrap phase (yes, this is bad practice)
-        phase(step) = phase(step)+(2*pi);
-    end
+%     if phase(step) < -4.7                                                  % Unwrap phase (yes, this is bad practice)
+%         phase(step) = phase(step)+(2*pi);
+%     end
     
     
     
     % gain(step) = corr(step) /  ( stim_win*stim_win' )  ;                    % Estimate gain.
     
-    % take 'raw' head angle, subtract from thorax angle
-    resp_win = resp((step-1)*stimperiod+1:(step-1)*stimperiod+L);         % One cycle of stimulus
+    % % take 'raw' head angle, subtract from thorax angle
+    %resp_win = resp((step-1)*stimperiod+1:(step-1)*stimperiod+L);         % One cycle of stimulus
     
     % take aligned head angle, subtract from thorax angle
-    % resp_win = resp((step-1)*stimperiod+phaseIdx+1:(step-1)*stimperiod+L+phaseIdx);     % Reconstruct shifted response at max. xcorr.
+    resp_win = resp((step-1)*stimperiod+phaseIdx+1:(step-1)*stimperiod+L+phaseIdx);     % Reconstruct shifted response at max. xcorr.
     
     % % raw signal:
     % resp_rel = stim_win - (resp_win);

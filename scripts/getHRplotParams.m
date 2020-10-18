@@ -108,10 +108,10 @@ manualstim=1;
 
 
 %% bode plot options
-bodererun = 0; % re-run analysis and save data
+bodererun = 1; % re-run analysis and save data
 bodefilterflag = 0; % run additional low freq filter during analysis
 
-bode_rel_first = 0; % 1, subtract HR from TR before calculating gain/phase; 0, calc phase, then subtract and find gain 
+bode_rel_first = 1; % 1, subtract HR from TR before calculating gain/phase; 0, calc phase, then subtract and find gain 
 
 bodelogXplot = 1; 
 bodeplotdb = 0; 

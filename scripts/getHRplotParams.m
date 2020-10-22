@@ -143,7 +143,7 @@ bodecheckplots = 0; % 1, plot individual time-series when aligning/removing pre-
 bodeprintflag = 1;
 
 %% Model functions **
-modelrerun = 0;
+modelrerun =0;
 
 %% Plot aesthetics ** 
 pdfbkgTransparent = 1;

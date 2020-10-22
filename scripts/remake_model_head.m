@@ -24,13 +24,12 @@ stab_gain = 0.000000001;
 
 % Stimulus parameters
 amp = 30; % +/- stimulus roll angle
-fps = 800; % for fixed sines only: currently loading reference chirp stim
-t_step = 1/fps;
-t_max = 10; % trial time, seconds
-t_length = 2*t_max/t_step;
-stimtime = t_max;
+% fps = 800; % for fixed sines only: currently loading reference chirp stim
+% t_step = 1/fps;
+% t_max = 10; % trial time, seconds
+% t_length = 2*t_max/t_step;
 
-for chirp_stim = [1,0]
+for chirp_stim = 1%[1,0]
     headroll = struct;
     stims = struct;
     framerates = struct;
@@ -39,6 +38,7 @@ for chirp_stim = [1,0]
         stimfreqs = 51;
     else
         stimfreqs = [0.1,1,3,6,10,15,20,25];
+        stimrates = [500,500,500,500,1000,1000,1000,1000];
     end
     
     for fIdx  = 1:length(stimfreqs)
@@ -46,7 +46,15 @@ for chirp_stim = [1,0]
         
         
         if ~chirp_stim    % Sine stimulus trace
-            
+           fps = stimrates(fIdx);
+            t_max = 20/stim_freq; % at least 20 cycles
+            if t_max < 10
+                t_max = 10;
+            end
+            stimtime = t_max;
+            t_step = 1/fps;
+
+    t_length = 2*t_max*fps;
             sYt = linspace(-t_max,t_max,t_length);
             sY = amp*sin(stim_freq*2*pi*sYt);
             stims(1).cond(1).freq(fIdx).trial = sY'; % for saving to disk in same format as experiments..
@@ -56,9 +64,16 @@ for chirp_stim = [1,0]
             sV = diff(sY)/t_step;
             sVt = linspace(-t_max,t_max,length(sV));
             stimtime = t_max;
-            
+                 
+            % Get active stabilization effort (near zero while looking at passive
+        % response)
+        rY = circshift(stab_gain*sY,ceil(head_lag*fps),2); % Relative movement of head, approx half of stim, opp direction
+        rYt = linspace(-t_max,t_max,length(rY));
+        
         elseif chirp_stim % Chirp stimulus trace
             %%
+            fps = 800;
+            t_max = 10;
             stimtime = t_max; %s
             %cfps = 2*stimtime*fps;
             halftime = 0.5*stimtime*fps;
@@ -99,28 +114,47 @@ for chirp_stim = [1,0]
             % Get stimulus velocity
             sV = diff(sY)/t_step;
             sVt = linspace(-1,stimtime+1,length(sV));
-        end
-        
-        % Get active stabilization effort (near zero while looking at passive
+               
+            % Get active stabilization effort (near zero while looking at passive
         % response)
         rY = circshift(stab_gain*sY,ceil(head_lag*fps),2); % Relative movement of head, approx half of stim, opp direction
         rYt = linspace(-1,stimtime,length(rY));
         
+end
+        
         % Solve model equations
-        tspan = [0 t_max];
+        tspan = sYt;%[0 t_max];
         y0 = [0 sV(fps)];
         % opts = odeset('RelTol',1e-2,'AbsTol',1e-4);
         [t,y] = ode45(@(t,y) model_head(t,y,J,k,c,sY,sYt,sV,sVt,rY,rYt), tspan, y0);
         
         
+        %{
+        figure
+        hold off
+        plot(sYt,sY,'Color',[0.6,0.6,0.6],'LineWidth',1 )
+        hold on,
+        if chirp_stim
+            plot(t,y(:,1),'Color','k','LineWidth',1 )
+        else
+            plot(t,y(:,1)- mean(y(:,1)),'Color','k','LineWidth',1 )
+        end
+        
+        %xlim(tspan)
+        
+        pbaspect([4,1,1])
+        %}
+        
+        
+        
         if ~chirp_stim
             % assign for saving fixed_sines data
-            headroll(1).cond(1).freq(fIdx).trial = y(floor(0.5*size(y,1)):end,1);
+            headroll(1).cond(1).freq(fIdx).trial = y(sYt>0,1);
         else
             
             % assign for saving chirp data
             cond = struct;
-            cond.mean = y(:,1)';
+            cond.mean = y(sYt>0 & sYt<=10,1)';
             cond.flymeans = [];
             cond.framerates = length(y(:,1))/10;
             cond.flies = [];
@@ -143,7 +177,7 @@ for chirp_stim = [1,0]
     end
 end
 %% plot trace
-% %{
+%{
 figure
 hold off
 plot(sYt,sY,'Color',[0.6,0.6,0.6],'LineWidth',1 )

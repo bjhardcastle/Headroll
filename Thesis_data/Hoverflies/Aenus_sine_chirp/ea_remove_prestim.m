@@ -144,7 +144,7 @@ if size(x,2)>size(x,1)
     x = x';
 end
 
-ref_stim = x;
+ref_stim = x - mean(x);
 
 [s,r,d] = alignsignals(ref_stim, stim(:,3));
 
@@ -152,52 +152,75 @@ ref_stim = x;
 if d+length(ref_stim) < length(stim) % not enough data to shift for full alignment
     aligned_stim = stim(d+1:d+length(ref_stim),:);
     aligned_resp = resp(d+1:d+length(ref_stim),:);
+    extraStim = 0;
+        extraResp = 0;
+
 else
-     aligned_stim = stim(length(stim)-length(ref_stim)+1:end,:);
-    aligned_resp = resp(length(stim)-length(ref_stim)+1:end,:);
+     aligned_stim = stim(d+1:end,:);
+    aligned_resp = resp(d+1:end,:);
+    extraStim = (d+length(ref_stim))-length(stim)+1;
+    extraResp =  (d+length(ref_stim))-length(resp)+1;
 end
 
 % Trim ramped sinewave from high freq signals (first and last 2s)
 if stim_freq >= 12 && stim_freq <30
     twoSec = fps*2;
-    aligned_resp = aligned_resp(twoSec+1:end-twoSec,:);
-    aligned_stim = aligned_stim(twoSec+1:end-twoSec,:);
+    aligned_resp = aligned_resp(twoSec+1:end-twoSec+extraStim,:);
+    aligned_stim = aligned_stim(twoSec+1:end-twoSec+extraStim,:);
     ref_stim = x(twoSec+1:end-twoSec);
 end
+amp =  round((max(aligned_stim(2:end-1,3)) - min(aligned_stim(2:end-1,3))) /2);
 
-
-% if min(stim(:,4)) == 0
-%     aligned_stim = ref_stim;    
-%     ref_stim_flag = 1;
-% else
-%     aligned_stim = stim(d+1:end,3);
-%     ref_stim_flag = 0;
-% end
-% 
-% 
-% aligned_resp = resp(d+1:end,:);
-% 
 
 if size(aligned_resp,1) - size(aligned_stim,1) > 0
     aligned_resp = aligned_resp(1:(size(aligned_stim,1)),:);
 elseif size(aligned_resp,1) - size(aligned_stim,1) < 0
     aligned_stim = aligned_stim(1:(size(aligned_resp,1)),:);
 end
-% if size(aligned_resp,1) - length(stim) > 0
-%     aligned_resp = aligned_resp(1:(length(stim)),:);
-%     aligned_stim = aligned_stim(1:(length(stim)),:);
-% end
 
 % try to get rid of offset resulting from starting vid analysis at non-zero angle
 for arIdx = 1:3
-aligned_resp(:,arIdx) = aligned_resp(:,arIdx) - mean(aligned_resp(:,arIdx));
-aligned_stim(:,arIdx) = aligned_stim(:,arIdx) -  mean(aligned_stim(:,arIdx));
+    aligned_resp(:,arIdx) = aligned_resp(:,arIdx) -  mean(aligned_resp(:,arIdx));
+    aligned_stim(:,arIdx) = aligned_stim(:,arIdx) - mean(aligned_stim(:,arIdx));
+    if amp > 30
+        aligned_resp(:,arIdx) = aligned_resp(:,arIdx).*30./amp;
+    end
 end
 
-if min(aligned_stim(:,4)) == 0
-    aligned_stim(:,3) = ref_stim;    
-end
 
+% use the reference stim trace
+        actual_stim = aligned_stim(:,3);
+%         if length(ref_stim)~=length(actual_stim)
+%              figure
+%             hold on
+%             plot(ref_stim,'r')
+%             plot(actual_stim,'b')
+%             pause
+%         end
+        if xcorr(actual_stim',ref_stim,0) < 0
+            ref_stim = -ref_stim;
+%            %{
+            figure
+            hold on
+            plot(ref_stim,'r')
+            plot(actual_stim,'b')
+            plot(aligned_resp(:,3),'k')
+            %}
+        end
+        if length(ref_stim)~=length(actual_stim)
+            try
+                aligned_stim = ref_stim(1:length(actual_stim));
+            catch
+                aligned_stim = ref_stim;
+                aligned_resp = aligned_resp(1:length(ref_stim),:);
+            end
+        else
+            aligned_stim = ref_stim;
+        end
+        ref_stim = actual_stim;
+
+        
+        
 if plot_flag == 1
     %   Plots
     figure('units','normalized','outerposition',[0 0 1 1]);

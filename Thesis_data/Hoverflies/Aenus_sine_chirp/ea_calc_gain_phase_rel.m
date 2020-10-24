@@ -52,7 +52,6 @@ for step = 1:num_steps
 %     end
     
     
-    
     % gain(step) = corr(step) /  ( stim_win*stim_win' )  ;                    % Estimate gain.
     
     % % take 'raw' head angle, subtract from thorax angle
@@ -60,7 +59,14 @@ for step = 1:num_steps
     
     % take aligned head angle, subtract from thorax angle
     resp_win = resp((step-1)*stimperiod+phaseIdx+1:(step-1)*stimperiod+L+phaseIdx);     % Reconstruct shifted response at max. xcorr.
-    
+%      
+%     close all
+%     figure
+%     plot(stim_win)
+%     hold on
+%     plot(resp((step-1)*stimperiod+1:(step-1)*stimperiod+L))
+%     pause(0.5)
+%     
     % % raw signal:
     % resp_rel = stim_win - (resp_win);
     % % or subtract off mean:

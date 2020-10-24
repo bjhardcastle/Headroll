@@ -111,7 +111,7 @@ switch stim_freq
         
 end
 
-ref_stim = x;
+ref_stim = x - mean(x);
 
 [s,r,d] = alignsignals(ref_stim, stim(:,3));
 
@@ -142,6 +142,7 @@ end
 % if stim_freq >= 12 && stim_freq <30
     % lots of errors so just use the reference stim trace
         actual_stim = aligned_stim(:,3);
+        
         if xcorr(actual_stim',ref_stim,0) < 0
             ref_stim = -ref_stim;
            %{
@@ -154,6 +155,7 @@ end
         end
         aligned_stim = ref_stim;
         ref_stim = actual_stim;
+      
 % 
 % else
 %     aligned_stim = aligned_stim(:,3);    

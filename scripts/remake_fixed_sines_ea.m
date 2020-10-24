@@ -61,7 +61,7 @@ for flyidx = 1:length(flies)
                     load([data_path,stim_fname]);
                     stim_data = data;
                     
-                    
+                   %{ 
                     if length(stim_data)-length(resp_data) ~= 0
                         
                         sprintf(['Different lengths: Fly ',num2str(fly),' C',num2str(cidx),' ',num2str(freq),'Hz trial ',num2str(trialidx)])
@@ -70,12 +70,13 @@ for flyidx = 1:length(flies)
                        % resp_data(length(resp_data):length(stim_data),1:3)=0;
                         
                     end
-                
+                    %}
+                    
                     % Get reference stim and aligned response data
                     [stim,trimmed_data,aligned_stim,fps] = ea_remove_prestim(stim_data,resp_data,freqs(freqidx),bodecheckplots);
                     
                     data = trimmed_data;
-                    aligned_stim = aligned_stim(:,3);
+                    %aligned_stim = aligned_stim(:,3);
 
                     % Clean resp data
                     ea_clean_up;

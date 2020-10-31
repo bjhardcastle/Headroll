@@ -79,7 +79,7 @@ getHRplotParams
 flyname = 'ea';
 
 % condSelect = [1,3];
-condSelect = [1];
+condSelect = [2];
 % 
 color_mat = {};
 color_mat{condSelect(1)} = ea_col;

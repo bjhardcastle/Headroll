@@ -134,6 +134,9 @@ if ~bodesubplots
 
     if bodeprintflag
         savename = [plotnames.(plotname) '_' flyname '_gain'];
+        if bode_rel_first
+            savename = [savename '_rel_first'];
+        end
         printHR
     end
     figure
@@ -250,8 +253,10 @@ else
 
 
 end
-savename = [plotnames.(plotname) '_' flyname '_phase'];
-
 if bodeprintflag
+    savename = [plotnames.(plotname) '_' flyname '_phase'];
+    if bode_rel_first
+        savename = [savename '_rel_first'];
+    end
     printHR
 end

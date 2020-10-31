@@ -59,7 +59,8 @@ for step = 1:num_steps
         
     % % ratio of body/head roll:
     gain(step) =  (resp_win/stim_win);
-      %  gain(step) = (stim_win - resp_win)/stim_win;
+       gain(step) = (stim_win - resp_win)/stim_win;
+gain(step) = (stim_win - resp((step-1)*stimperiod+1:(step-1)*stimperiod+L))/stim_win;
 
     % % or relative headroll (neck actuation):
     %gain(step) =  abs(resp_rel/stim_win);

@@ -21,7 +21,7 @@ if errbar == 1
     lineprops.linewidth = defaultLineWidth;
     mseb(tVec, cond(condSelect).mean, nanstd(cond(condSelect).flymeans,[],1)./sqrt(size(cond(condSelect).flymeans,1)), lineprops, 1 );
 else
-    plot(tVec, cond(condSelect).mean,'Color',color_mat{1},'LineWidth',defaultLineWidth )
+    plot(tVec, cond(condSelect).mean,'Color',color_mat{condSelect},'LineWidth',defaultLineWidth )
 end
 
 ylim([-30 30])

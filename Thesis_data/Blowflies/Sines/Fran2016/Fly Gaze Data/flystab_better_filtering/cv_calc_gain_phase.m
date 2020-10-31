@@ -50,7 +50,7 @@ for step = 1:num_steps
      resp_win = -( stim_win - resp((step-1)*stimperiod+1:(step-1)*stimperiod+L) );         % One cycle of stimulus
     
     % take aligned head angle, subtract from thorax angle
-    % resp_win = resp((step-1)*stimperiod+phaseIdx+1:(step-1)*stimperiod+L+phaseIdx);     % Reconstruct shifted response at max. xcorr.
+    resp_win = -( stim_win - resp((step-1)*stimperiod+phaseIdx:(step-1)*stimperiod+L+phaseIdx-1));     % Reconstruct shifted response at max. xcorr.
         
       % % raw signal:
     % resp_rel = stim_win - (resp_win);

@@ -33,7 +33,7 @@ for step = 1:num_steps
         resp_win = resp_win - resp_off(step);                               % Remove offset
         
         corr_est(k+1) = stim_win*resp_win';                                 % Calculate inner product, that is, xcorr at phase k.
-        
+         corr_est(k+1) =  stim_win*-(stim_win-resp_win)';  
     end
     
     [corr(step), phaseIdx] = nanmax(corr_est);                              % Find max of xcorr.
@@ -48,9 +48,10 @@ for step = 1:num_steps
     
     % % take 'raw' head angle, subtract from thorax angle
     % resp_win = resp((step-1)*stimperiod+1:(step-1)*stimperiod+L);         % One cycle of stimulus
-    
+     resp_win = -( stim_win - resp((step-1)*stimperiod+1:(step-1)*stimperiod+L) );         % One cycle of stimulus
+
     % take aligned head angle, subtract from thorax angle
-    resp_win = resp((step-1)*stimperiod+phaseIdx+1:(step-1)*stimperiod+L+phaseIdx);     % Reconstruct shifted response at max. xcorr.
+    %resp_win = resp((step-1)*stimperiod+phaseIdx+1:(step-1)*stimperiod+L+phaseIdx);     % Reconstruct shifted response at max. xcorr.
     
     % % raw signal:
     % resp_rel = stim_win - (resp_win);
@@ -60,10 +61,10 @@ for step = 1:num_steps
     % % ratio of body/head roll:
     gain(step) =  (resp_win/stim_win);
        gain(step) = (stim_win - resp_win)/stim_win;
-gain(step) = (stim_win - resp((step-1)*stimperiod+1:(step-1)*stimperiod+L))/stim_win;
+gain(step) = (stim_win - resp((step-1)*stimperiod+phaseIdx:(step-1)*stimperiod+L+phaseIdx-1))/stim_win;
 
     % % or relative headroll (neck actuation):
-    %gain(step) =  abs(resp_rel/stim_win);
+    gain(step) =  abs(resp_win/stim_win);
 
     %     gain(step) = corr(step) /  ( stim_win*stim_win' )  ;                    % Estimate gain.
     

@@ -152,6 +152,7 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 resp_phase_mean(isnan(resp_gain_mean))=nan;
+phaseVec = [];
 for c = 1:length(condSelect)
     cidx = condSelect(end-c+1);
     
@@ -160,7 +161,6 @@ for c = 1:length(condSelect)
     CLpm = circ_mean(CLp*pi/180,[],1)*180/pi;
     CLpm(CLpm > 90) = -360+CLpm(CLpm>90);
     CLps = (circ_std(CLp*pi/180,[],[],1)*180/pi)./sqrt(N_array);
-    
     if bodesubplots
         phaseplot=subplot('Position',phaseplot_pos);
     else

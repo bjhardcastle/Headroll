@@ -69,7 +69,7 @@ end
 
 ytickinterval = 0.5;
 ylim1 = 0;
-ylim2 = 1.8;
+ylim2 = 1.0;
 
 if bodelogXplot
     xlim(logXlims)
@@ -103,13 +103,17 @@ else
     % title(['Frequency response: e.aeneus'])
 end
 
-if bodelogXplot
+if bodelogXplot 
+    if ~bodesubplots
     dr =   range([gainplot.YTick(1),gainplot.YTick(end)])/range(logXlims);
     daspect(gainplot,[1,2*dr,1])
+    end
     offsetAxesLogX(gainplot)
 else
+    if ~bodesubplots
     dr =  [gainplot.YTick(1),gainplot.YTick(end)]/25;
     daspect(gainplot,[1,2*dr,1])
+    end
     offsetAxes(gainplot)
 end
 
@@ -142,7 +146,7 @@ if ~bodesubplots
     figure
 else
     setHRaxes(gainplot,3,6)
-    tightfig(gcf)
+    %tightfig(gcf)
     
 end
 
@@ -199,7 +203,7 @@ ylabel('Phase (\circ)')
 xlabel('Frequency (Hz)')
 
 ytickinterval = 60;
-ylim1 = -240;
+ylim1 = -180;
 ylim2 = 60;
 set(phaseplot,'YTick',sort(unique([0:ytickinterval:ylim2,0:-ytickinterval:ylim1])))
 % axis([-0.5 25.5 min(phaseplot.YTick) max(phaseplot.YTick)+30])
@@ -228,13 +232,18 @@ else
 end
 
 if bodelogXplot
+    if ~bodesubplots
     dr =  range([phaseplot.YTick(1),phaseplot.YTick(end)])/range(logXlims);
     daspect(phaseplot,[1,2*dr,1])
+    end
     offsetAxesLogX(phaseplot)
 else
+    if ~bodesubplots
     dr =  range([phaseplot.YTick(1),phaseplot.YTick(end)])/25;
     daspect(phaseplot,[1,2*dr,1])
+    end
     offsetAxes(phaseplot)
+    
 end
 
 if bodesubplots

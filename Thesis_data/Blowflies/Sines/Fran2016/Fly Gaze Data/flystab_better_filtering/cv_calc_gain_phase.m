@@ -11,8 +11,8 @@ num_steps = floor(length(stim)/stimperiod)-1;                               % nu
 if length(stim) == stimperiod
     num_steps = 1;
 end
-L = 2*floor(stimperiod/2);                                                  % Length of each cycke (in samples)
-
+% L = 2*floor(stimperiod/2);                                                  % Length of each cycke (in samples)
+L = stimperiod;
 
 step_vector_G = zeros(num_steps-1,1);
 stim_off = zeros(num_steps-1,1);

@@ -260,6 +260,7 @@ lineprops.linewidth = thickLineWidth;
 lineprops.col = {[0 0 0]};
 if manualstim
     ls=plot([0 plotfreqs], [0 mean_s],'LineWidth',defaultLineWidth, 'Color',lineprops.col{:});
+    ls.LineStyle = '--';
 else
     if shadederror
         ls=mseb([0 plotfreqs], [0 mean_s], [0 std_s]./sqrt(N_array),lineprops,1);

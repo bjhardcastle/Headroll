@@ -198,8 +198,10 @@ end
 %             pause
 %         end
         if xcorr(actual_stim',ref_stim,0) < 0
-            ref_stim = -ref_stim;
-%            %{
+                       aligned_resp(:,1:3) = -aligned_resp(:,1:3);
+            actual_stim = -actual_stim;
+%  ref_stim = -ref_stim;
+           %{
             figure
             hold on
             plot(ref_stim,'r')

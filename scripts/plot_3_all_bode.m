@@ -94,4 +94,7 @@ bodecolor_mat{condSelect(1)} = ea_col;
 bodecolor_mat{condSelect(2)} = darkGreyCol;
 legCell = {'intact';'no ocelli';'no halteres'};
 
+% restrict range to those available in other flies:
+stimfreqs(1) = nan;
+
 plot_bode_script

@@ -32,15 +32,16 @@ lineprops.linewidth = thickLineWidth;
 figure
 
 N_array = sum(~isnan(resp_gain_mean(:,:,1,1)));
-
+gainVec = [];
 for c = 1:length(condSelect)
-    cidx = condSelect(end-c+1);
+    cidx = condSelect(end-c+1); % plot in reverse so 'intact' fly data are on top
     
     CLg=squeeze(resp_gain_mean(:,:,:,cidx));
     if bodeplotdb
         CLg = mag2db(CLg);
     end
     CLgm=nanmean(CLg,1);
+        gainVec(length(condSelect)-c+1,:) = CLgm;
     CLgs = nanstd(CLg,1)./sqrt(N_array);
     
     if bodesubplots
@@ -154,12 +155,13 @@ end
 resp_phase_mean(isnan(resp_gain_mean))=nan;
 phaseVec = [];
 for c = 1:length(condSelect)
-    cidx = condSelect(end-c+1);
+    cidx = condSelect(end-c+1);% plot in reverse so 'intact' fly data are on top
     
     
     CLp=squeeze(resp_phase_mean(:,:,:,cidx));
     CLpm = circ_mean(CLp*pi/180,[],1)*180/pi;
     CLpm(CLpm > 90) = -360+CLpm(CLpm>90);
+    phaseVec(length(condSelect)-c+1,:) = CLpm;
     CLps = (circ_std(CLp*pi/180,[],[],1)*180/pi)./sqrt(N_array);
     if bodesubplots
         phaseplot=subplot('Position',phaseplot_pos);
@@ -268,4 +270,7 @@ if bodeprintflag
         savename = [savename '_rel_first'];
     end
     printHR
+end
+if bodeReconstructSlipspeeds
+    make_toy_sine_data
 end

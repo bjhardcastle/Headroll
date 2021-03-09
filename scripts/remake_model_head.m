@@ -29,7 +29,7 @@ amp = 30; % +/- stimulus roll angle
 % t_max = 10; % trial time, seconds
 % t_length = 2*t_max/t_step;
 
-for chirp_stim = 1%[1,0]
+for chirp_stim = [1,0]
     headroll = struct;
     stims = struct;
     framerates = struct;

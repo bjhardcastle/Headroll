@@ -152,7 +152,15 @@ for flyidx = 1:length(flies)
                                     Fs = fps;
                                     stim = aligned_stim';
                                     stimfreq = freq;
-                                    resp = rel_resp';
+                                    if size(stim,1) > size(stim,2)
+                                        stim = stim';
+                                    end
+                                    
+                                    if size(rel_resp,1) > size(rel_resp,2)
+                                        rel_resp = rel_resp';
+                                    end
+                                    resp = rel_resp;
+                                    
                                     if bode_rel_first
                                         tb_calc_gain_phase_rel;
                                     else
@@ -169,10 +177,10 @@ for flyidx = 1:length(flies)
                                     if length(cycles)<flyidx || length(cycles(flyidx).cond)<cidx || length(cycles(flyidx).cond(cidx).freq)<freqidx || isempty(cycles(flyidx).cond(cidx).freq)
                                         cycles(flyidx).cond(cidx).freq{freqidx} = reshape( rel_resp(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1);
                                     else
-                                        cycles(flyidx).cond(cidx).freq{freqidx} = [cycles(flyidx).cond(cidx).freq{freqidx}; reshape( rel_resp(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1) ];
+                                        cycles(flyidx).cond(cidx).freq{freqidx} = [cycles(flyidx).cond(cidx).freq{freqidx}, reshape( rel_resp(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1) ];
                                     end
-                                    
-                                    
+                                
+ 
                                 end
                                 
                             else % condition folder doesn't exist
@@ -279,7 +287,14 @@ for flyidx = 1:length(flies)
                             Fs = fps;
                             stimfreq = freq;
                             stim = aligned_stim';
-                            resp = rel_resp';
+                            if size(stim,1) > size(stim,2)
+                                stim = stim';
+                            end
+                            if size(rel_resp,1) > size(rel_resp,2)
+                                rel_resp = rel_resp';
+                            end
+                            resp = rel_resp;
+                            
                             if bode_rel_first
                                 tb_calc_gain_phase_rel;
                             else
@@ -296,7 +311,7 @@ for flyidx = 1:length(flies)
                             if length(cycles)<flyidx || length(cycles(flyidx).cond)<cidx || length(cycles(flyidx).cond(cidx).freq)<freqidx || isempty(cycles(flyidx).cond(cidx).freq)
                                 cycles(flyidx).cond(cidx).freq{freqidx} = reshape( rel_resp(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1);
                             else
-                                cycles(flyidx).cond(cidx).freq{freqidx} = [cycles(flyidx).cond(cidx).freq{freqidx}; reshape( rel_resp(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1) ];
+                                cycles(flyidx).cond(cidx).freq{freqidx} = [cycles(flyidx).cond(cidx).freq{freqidx}, reshape( rel_resp(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1) ];
                             end
                             
                         end

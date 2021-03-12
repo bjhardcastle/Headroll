@@ -112,7 +112,7 @@ for flyidx = 1:length(flies)
                     
                     
                     if size(aligned_stim,2) == size(resp,1) && size(aligned_stim,1) == size(resp,2)
-                        aligned_stim =aligned_stim';
+                        aligned_stim = aligned_stim';
                     end
                     
                     % Thorax roll - head roll
@@ -138,7 +138,12 @@ for flyidx = 1:length(flies)
                         stim = stim';
                     end
                     stimfreq = freq;
-                    resp = rel_resp';
+                    
+                    if size(rel_resp,1) > size(rel_resp,2)
+                        rel_resp = rel_resp';
+                    end
+                    resp = rel_resp;
+                       
                     if bode_rel_first
                         cv_calc_gain_phase_rel;
                     else
@@ -151,13 +156,13 @@ for flyidx = 1:length(flies)
                     resp_phase_std(flyidx,freqidx,trialidx,cidx) = CL_phase_std;
                       
                           
-            % reshape resp to store individual cycles: keep adding
-                            % to store all cycles from all trials to the same fly
-                            if length(cycles)<flyidx || length(cycles(flyidx).cond)<cidx || length(cycles(flyidx).cond(cidx).freq)<freqidx || isempty(cycles(flyidx).cond(cidx).freq)
-                                cycles(flyidx).cond(cidx).freq{freqidx} = reshape( rel_resp(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1);
-                            else
-                                cycles(flyidx).cond(cidx).freq{freqidx} = [cycles(flyidx).cond(cidx).freq{freqidx}; reshape( rel_resp(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1) ];
-                            end
+                    % reshape resp to store individual cycles: keep adding
+                    % to store all cycles from all trials to the same fly
+                    if length(cycles)<flyidx || length(cycles(flyidx).cond)<cidx || length(cycles(flyidx).cond(cidx).freq)<freqidx || isempty(cycles(flyidx).cond(cidx).freq)
+                        cycles(flyidx).cond(cidx).freq{freqidx} = reshape( rel_resp(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1);
+                    else
+                        cycles(flyidx).cond(cidx).freq{freqidx} = [cycles(flyidx).cond(cidx).freq{freqidx}, reshape( rel_resp(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1) ];
+                    end
                 end
             end
             %}
@@ -248,7 +253,11 @@ for flyidx = 1:length(flies)
                                 stim = stim';
                             end
                             stimfreq = freq;
-                            resp = rel_resp';
+                            
+                            if size(rel_resp,1) > size(rel_resp,2)
+                                rel_resp = rel_resp';
+                            end
+                            resp = rel_resp;
                             if bode_rel_first
                                 cv_calc_gain_phase_rel;
                             else
@@ -261,10 +270,11 @@ for flyidx = 1:length(flies)
                             
                        % reshape resp to store individual cycles: keep adding
                             % to store all cycles from all trials to the same fly
+
                             if length(cycles)<flyidx || length(cycles(flyidx).cond)<cidx || length(cycles(flyidx).cond(cidx).freq)<freqidx || isempty(cycles(flyidx).cond(cidx).freq)
                                 cycles(flyidx).cond(cidx).freq{freqidx} = reshape( rel_resp(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1);
                             else
-                                cycles(flyidx).cond(cidx).freq{freqidx} = [cycles(flyidx).cond(cidx).freq{freqidx}; reshape( rel_resp(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1) ];
+                                cycles(flyidx).cond(cidx).freq{freqidx} = [cycles(flyidx).cond(cidx).freq{freqidx}, reshape( rel_resp(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1) ];
                             end
                             
                         else % condition folder doesn't exist

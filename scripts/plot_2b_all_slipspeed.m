@@ -38,8 +38,8 @@ clearvars
 getHRplotParams
 
 if bodererun
-        bode_rel_first = 0;
-remake_fixed_sines_tb
+    bode_rel_first = 0;
+    remake_fixed_sines_tb
     cd(fullfile(rootpathHR))
 else
     load('..\mat\DATA_tb_fixed_sines');

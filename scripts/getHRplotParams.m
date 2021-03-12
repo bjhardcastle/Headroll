@@ -101,6 +101,7 @@ plotsize_bode=[   208 295 400 325];
 %%
 
 plotnames = struct;
+plotnames.CFScycles = 'cfs_cycles';
 plotnames.slipspeedPDF = 'slipspeed_pdf';
 plotnames.slipspeedMode = 'slipspeed_mode';
 plotnames.slipspeedMedian = 'slipspeed_median';
@@ -112,6 +113,7 @@ HRpanelOrder = {'cv';'tb';'ea'}; % for composite figs where plots are presented 
 panelflag = 1; % toggle off to leave all axes intact
 
 panellayout = struct;
+panellayout.CFScycles = 'vertical';
 panellayout.slipspeedPDF = 'vertical';
 panellayout.slipspeedMode = 'horizontal';
 panellayout.slipspeedMedian = 'horizontal';
@@ -129,7 +131,7 @@ manualstim=1;
 
 
 %% bode plot options
-bodererun = 1; % re-run analysis and save data
+bodererun = 0; % re-run analysis and save data
 bodefilterflag = 0; % run additional low freq filter during analysis
 
 bode_rel_first = 0; % 1, subtract HR from TR before calculating gain/phase; 0, calc phase, then subtract and find gain 
@@ -140,11 +142,11 @@ bodeshadederror = 0;
 bodesubplots = 0; %1, gain+phase plots in one fig; 0, separate figs
 bodecheckplots = 0; % 1, plot individual time-series when aligning/removing pre-stim/refstim
 
-bodeprintflag = 0;
+bodeprintflag = 1;
 
 bodeReconstructSlipspeeds = 0; % sanity check 
 %% Model functions **
-modelrerun =0;
+modelrerun = 0;
 
 %% Plot aesthetics ** 
 pdfbkgTransparent = 1;

@@ -1,3 +1,5 @@
+% don't call directly this script directly: run from 'plot_2b_splipspeed'
+
 plotname = 'slipspeedPDF';
 savename = [plotnames.(plotname) '_' flyname ];
 
@@ -160,7 +162,7 @@ lineprops.col = {color_mat{c2}};
     mseb(xvalues, nanmean(hist_resp_1,1),nanstd(hist_resp_1,[],1)./sqrt(N),lineprops,1);
     
     hold off
-    t =title (['', num2str(freq), ' Hz']);
+    t = title (['', num2str(freq), ' Hz']);
     set(t,'HorizontalAlignment','right')
     
     if fIdx == ceil(length(plotfreqs)/2)

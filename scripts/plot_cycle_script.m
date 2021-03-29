@@ -25,35 +25,42 @@ sfIdx(sfIdx ==0) = [];
 
 % cycle resolution:
 cycsamples = 100;
-stimcycle = 30.*sin(linspace(0,2*pi,cycsamples));
+stimcycleideal = 30.*sin(linspace(0,2*pi,cycsamples));
 
 for cidx = condSelect
     
-    figure('Units','centimeters','Position', [1 1 18 4]);
+    figure('Units','centimeters','Position', [1 1 18 20]);
     ct = 0;
     Nmax = 0; Nmin = 99;
     for freqidx = sfIdx
         
-        allcyc = [];
-        for flyidx = 1:length(cycles)
-            if ~isempty(cycles(flyidx).cond) ...
-                    && length(cycles(flyidx).cond) >= cidx ...
-                    && length(cycles(flyidx).cond(cidx).freq) >= freqidx ...
-                    && ~isempty(cycles(flyidx).cond(cidx).freq{freqidx})
+        allrespcyc = []; allstimcyc = [];
+        for flyidx = 1:length(respcycles)
+            if ~isempty(respcycles(flyidx).cond) ...
+                    && length(respcycles(flyidx).cond) >= cidx ...
+                    && length(respcycles(flyidx).cond(cidx).freq) >= freqidx ...
+                    && ~isempty(respcycles(flyidx).cond(cidx).freq{freqidx})
                 try
-                    cycs = cycles(flyidx).cond(cidx).freq{freqidx};
+                    stim = stimcycles(flyidx).cond(cidx).freq{freqidx};
+                    stim = stim';
+                    resp = respcycles(flyidx).cond(cidx).freq{freqidx};
+                    resp = resp';
                     thisfps = framerates(flyidx).cond(cidx).freq(freqidx).trial;
-                    thisfreq = roundn(stimfreqs(freqidx),rndn);
-                    %                     if size(cycs,2)<size(cycs,1)
-                    cycs = cycs';
-                    %                     end
-                    for cycidx = 1:size(cycs,1)
+                    thisfreq = stimfreqs(freqidx);
+
+                    for cycidx = 1:size(resp,1)
                         % Then interpolate the current trial data to fit the time points in the
                         % standard trial (timeVector)
-                        fitcyc = interp1( linspace(0,ceil(1/thisfreq),size(cycs,2)) , cycs(cycidx,:) , linspace(0,ceil(1/thisfreq), cycsamples) );
+                        fitcyc = interp1( linspace(0,1/thisfreq,size(resp,2)) , resp(cycidx,:) , linspace(0,1/thisfreq, cycsamples) );
                         fitcyc = fitcyc - nanmean(fitcyc);
                         % figure,plot(fitcyc),pause(0.1),close gcf
-                        allcyc = [allcyc; fitcyc];
+                        allrespcyc = [allrespcyc; fitcyc];
+                        
+                        fitcyc = interp1( linspace(0,1/thisfreq,size(stim,2)) , stim(cycidx,:) , linspace(0,1/thisfreq, cycsamples) );
+                        fitcyc = fitcyc - nanmean(fitcyc);
+                        % figure,plot(fitcyc),pause(0.1),close gcf
+                        allstimcyc = [allstimcyc; fitcyc];
+                        
                     end
                 catch
                     disp('some cycles different length/framerate')
@@ -63,28 +70,30 @@ for cidx = condSelect
             end
         end
         
-        allcyc = allcyc';
-        allcycMean = nanmean(allcyc,2);
-        allcycStd = nanstd(allcyc,[],2);
+        allstimcyc = allstimcyc';
+        allrespcyc = allrespcyc';
+        allcycMean = nanmean(allrespcyc,2);
+        allcycStd = nanstd(allrespcyc,[],2);
         
         ct = ct+1;
         subplot(2,length(sfIdx),ct)
         hold on
 
-        plot(allcyc,'Color',[color_mat{cidx} 0.1],'LineWidth',0.01)
-        plot(stimcycle,'Color',[0 0 0],'LineWidth',defaultLineWidth)
-        t = title (['', num2str(thisfreq), ' Hz']);
+%         plot(allrespcyc,'Color',[color_mat{cidx} 0.02],'LineWidth',0.01)
+                plot(allstimcyc,'Color',[color_mat{cidx} 0.02],'LineWidth',0.01)
+plot(stimcycleideal,'Color',midGreyCol,'LineWidth',defaultLineWidth)
+        t = title (['', num2str(roundn(thisfreq,rndn)), ' Hz']);
         
         %         title(['N = ' num2str(size(allcyc,2))],'FontSize',6)
         %         plot(allcycMean,'Color',[plotcol 0.8],'LineWidth',2)
-        ylim([-40,40])
+        ylim([-65,65])
        
         set(gca,'ytick',[-30,0,30])
         set(gca,'yticklabel',{'-30','','30'})
         set(gca,'xtick',[1 cycsamples])
         set(gca,'xticklabel',[])
                 
-        pbaspect([1.2 1 1])
+%         daspect([100 60 1])
 
         set(gca,'clipping','off')
 %         daspect(gca,[100 80 1])
@@ -97,18 +106,20 @@ for cidx = condSelect
             trimYAxisToLims(gca) 
         end
         
-        if length(cycles) > Nmax
-            Nmax = length(cycles);
+        setHRaxes(gca,2.38,1.5)
+        
+        if length(respcycles) > Nmax
+            Nmax = length(respcycles);
         end
-        if length(cycles) < Nmin
-            Nmin = length(cycles);
-        end
+        if length(respcycles) < Nmin
+            Nmin = length(respcycles);
+        end  
+
     end
     %     linkaxes
-    
-    
-    setHRaxes(gca,1.5)
     tightfig(gcf)
+
+    
     if Nmin == Nmax
         suffix = ['C' num2str(cidx) '_N=' num2str(Nmin)];
     else

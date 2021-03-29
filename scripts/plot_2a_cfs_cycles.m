@@ -57,6 +57,7 @@ legCell = {'no ocelli';'no ocelli, dark';'no halteres';'no halteres, dark'};
 
 % plot_bode_script
 plot_cycle_script
+
 %% hoverfly
 try
     cd(fullfile(rootpathHR))
@@ -91,7 +92,8 @@ legCell = {'intact';'no ocelli';'no halteres'};
 % plot_bode_script
 plot_cycle_script
 
-%% model
+%% model - need to save 'respcycles' and 'stimcycles' in 'remake_model_head'
+%{
 try
     cd(fullfile(rootpathHR))
 catch
@@ -121,3 +123,5 @@ legCell = {'0.5 gain';'0.5 gain'};
 
 % plot_bode_script
 plot_cycle_script
+
+%}

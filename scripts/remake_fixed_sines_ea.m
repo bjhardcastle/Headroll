@@ -24,7 +24,8 @@ trial_nexist_flag = 1;
 % stims(flyidx).cond(cidx).freq(freqidx).trial(:,trialidx)=  NaN(1,10000);
 
 headroll = struct();
-cycles = struct('cond',struct('freq',[]));
+respcycles = struct('cond',struct('freq',[]));
+stimcycles = struct('cond',struct('freq',[]));
 resp_gain = nan(length(flies),length(stimfreqs),10,3);
 resp_phase = nan(length(flies),length(stimfreqs),10,3);
 resp_gain_std = nan(length(flies),length(stimfreqs),10,3);
@@ -144,12 +145,13 @@ for flyidx = 1:length(flies)
                        
                     % reshape resp to store individual cycles: keep adding
                     % to store all cycles from all trials to the same fly
-                    if length(cycles)<flyidx || length(cycles(flyidx).cond)<cidx || length(cycles(flyidx).cond(cidx).freq)<freqidx || isempty(cycles(flyidx).cond(cidx).freq)
-                        cycles(flyidx).cond(cidx).freq{freqidx} = reshape( rel_resp(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1);
+                    if length(respcycles)<flyidx || length(respcycles(flyidx).cond)<cidx || length(respcycles(flyidx).cond(cidx).freq)<freqidx || isempty(respcycles(flyidx).cond(cidx).freq)
+                        respcycles(flyidx).cond(cidx).freq{freqidx} = reshape( rel_resp(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1);
+                        stimcycles(flyidx).cond(cidx).freq{freqidx} = reshape( stim(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1);
                     else
-                        cycles(flyidx).cond(cidx).freq{freqidx} = [cycles(flyidx).cond(cidx).freq{freqidx}, reshape( rel_resp(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1) ];
+                        respcycles(flyidx).cond(cidx).freq{freqidx} = [respcycles(flyidx).cond(cidx).freq{freqidx}, reshape( rel_resp(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1) ];
+                        stimcycles(flyidx).cond(cidx).freq{freqidx} = [stimcycles(flyidx).cond(cidx).freq{freqidx}, reshape( stim(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1) ];
                     end
-                            
                             
                 else % condition folder doesn't exist
                     trial_nexist_flag = 1;
@@ -176,9 +178,9 @@ resp_phase_std_mean = circ_std(resp_phase_std*pi/180,[],[],3)*180/pi;
 resp_phase_std_mean(isnan(resp_gain_std_mean)) = nan;
 
 if bode_rel_first
-    save(fullfile(rootpathHR,'..\mat\DATA_ea_fixed_sines_rel_first.mat'),'headroll','framerates','stims','flies','stimfreqs','cycles');
+    save(fullfile(rootpathHR,'..\mat\DATA_ea_fixed_sines_rel_first.mat'),'headroll','framerates','stims','flies','stimfreqs','respcycles','stimcycles');
     save(fullfile(rootpathHR,'..\mat\DATA_ea_gain_phase_rel_first.mat'),'resp_gain_mean','resp_phase_mean','resp_gain_std','resp_phase_std', 'step_G','stimfreqs');
 else
-    save(fullfile(rootpathHR,'..\mat\DATA_ea_fixed_sines.mat'),'headroll','framerates','stims','flies','stimfreqs','cycles');
+    save(fullfile(rootpathHR,'..\mat\DATA_ea_fixed_sines.mat'),'headroll','framerates','stims','flies','stimfreqs','respcycles','stimcycles');
     save(fullfile(rootpathHR,'..\mat\DATA_ea_gain_phase.mat'),'resp_gain_mean','resp_phase_mean','resp_gain_std','resp_phase_std', 'step_G','stimfreqs');
 end

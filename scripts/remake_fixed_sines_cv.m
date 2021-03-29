@@ -39,7 +39,8 @@ clean_runs = 3;
 % trial_nexist_flag = 1;
 headroll = struct();
 stims = struct();
-cycles = struct('cond',struct('freq',[]));
+respcycles = struct('cond',struct('freq',[]));
+stimcycles = struct('cond',struct('freq',[]));
 resp_gain = nan(length(flies),length(stimfreqs),10,3);
 resp_phase = nan(length(flies),length(stimfreqs),10,3);
 resp_gain_std = nan(length(flies),length(stimfreqs),10,3);
@@ -83,7 +84,15 @@ for flyidx = 1:length(flies)
                     % Load raw Labview data: (8 channels)
                     eval(strcat('resp_data = response_',int2str(name_array(2,freqidx+2)),'_1;'));
                     eval(strcat('stim_data = stimulus_',int2str(name_array(2,freqidx+2)),'_1;'));
-                    
+             
+%                     try
+%                         
+%                     [stim,trimmed_data,aligned_stim,fps] = cv_remove_prestim(stim_data,resp_data,freqs(freqidx),bodecheckplots);
+%                     
+%                     aligned_stim = aligned_stim(:,3);
+%                     catch
+%                     end
+                     
                     % Clean stim data
                     data = stim_data;
                     cv_clean_up;
@@ -158,10 +167,12 @@ for flyidx = 1:length(flies)
                           
                     % reshape resp to store individual cycles: keep adding
                     % to store all cycles from all trials to the same fly
-                    if length(cycles)<flyidx || length(cycles(flyidx).cond)<cidx || length(cycles(flyidx).cond(cidx).freq)<freqidx || isempty(cycles(flyidx).cond(cidx).freq)
-                        cycles(flyidx).cond(cidx).freq{freqidx} = reshape( rel_resp(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1);
+                    if length(respcycles)<flyidx || length(respcycles(flyidx).cond)<cidx || length(respcycles(flyidx).cond(cidx).freq)<freqidx || isempty(respcycles(flyidx).cond(cidx).freq)
+                        respcycles(flyidx).cond(cidx).freq{freqidx} = reshape( rel_resp(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1);
+                        stimcycles(flyidx).cond(cidx).freq{freqidx} = reshape( stim(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1);
                     else
-                        cycles(flyidx).cond(cidx).freq{freqidx} = [cycles(flyidx).cond(cidx).freq{freqidx}, reshape( rel_resp(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1) ];
+                        respcycles(flyidx).cond(cidx).freq{freqidx} = [respcycles(flyidx).cond(cidx).freq{freqidx}, reshape( rel_resp(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1) ];
+                        stimcycles(flyidx).cond(cidx).freq{freqidx} = [stimcycles(flyidx).cond(cidx).freq{freqidx}, reshape( stim(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1) ];
                     end
                 end
             end
@@ -268,13 +279,14 @@ for flyidx = 1:length(flies)
                             resp_gain_std(flyidx,freqidx,trialidx,cidx) = CL_gain_std;
                             resp_phase_std(flyidx,freqidx,trialidx,cidx) = CL_phase_std;
                             
-                       % reshape resp to store individual cycles: keep adding
+                            % reshape resp to store individual cycles: keep adding
                             % to store all cycles from all trials to the same fly
-
-                            if length(cycles)<flyidx || length(cycles(flyidx).cond)<cidx || length(cycles(flyidx).cond(cidx).freq)<freqidx || isempty(cycles(flyidx).cond(cidx).freq)
-                                cycles(flyidx).cond(cidx).freq{freqidx} = reshape( rel_resp(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1);
+                            if length(respcycles)<flyidx || length(respcycles(flyidx).cond)<cidx || length(respcycles(flyidx).cond(cidx).freq)<freqidx || isempty(respcycles(flyidx).cond(cidx).freq)
+                                respcycles(flyidx).cond(cidx).freq{freqidx} = reshape( rel_resp(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1);
+                                stimcycles(flyidx).cond(cidx).freq{freqidx} = reshape( stim(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1);
                             else
-                                cycles(flyidx).cond(cidx).freq{freqidx} = [cycles(flyidx).cond(cidx).freq{freqidx}, reshape( rel_resp(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1) ];
+                                respcycles(flyidx).cond(cidx).freq{freqidx} = [respcycles(flyidx).cond(cidx).freq{freqidx}, reshape( rel_resp(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1) ];
+                                stimcycles(flyidx).cond(cidx).freq{freqidx} = [stimcycles(flyidx).cond(cidx).freq{freqidx}, reshape( stim(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1) ];
                             end
                             
                         else % condition folder doesn't exist
@@ -304,10 +316,10 @@ resp_phase_std_mean = circ_std(resp_phase_std*pi/180,[],[],3)*180/pi;
 resp_phase_std_mean(isnan(resp_gain_std_mean)) = nan;
 
 if bode_rel_first
-    save(fullfile(rootpathHR,'..\mat\DATA_cv_fixed_sines_rel_first.mat'),'headroll','framerates','stims','flies','stimfreqs', 'cycles');
+    save(fullfile(rootpathHR,'..\mat\DATA_cv_fixed_sines_rel_first.mat'),'headroll','framerates','stims','flies','stimfreqs','respcycles','stimcycles');
     save(fullfile(rootpathHR,'..\mat\DATA_cv_gain_phase_rel_first.mat'),'resp_gain_mean','resp_phase_mean','resp_gain_std','resp_phase_std', 'step_G','stimfreqs');
 else
-    save(fullfile(rootpathHR,'..\mat\DATA_cv_fixed_sines.mat'),'headroll','framerates','stims','flies','stimfreqs', 'cycles');
+    save(fullfile(rootpathHR,'..\mat\DATA_cv_fixed_sines.mat'),'headroll','framerates','stims','flies','stimfreqs','respcycles','stimcycles');
     save(fullfile(rootpathHR,'..\mat\DATA_cv_gain_phase.mat'),'resp_gain_mean','resp_phase_mean','resp_gain_std','resp_phase_std', 'step_G','stimfreqs');
 end
 

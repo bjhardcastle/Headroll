@@ -18,7 +18,7 @@ step_vector_G = zeros(num_steps-1,1);
 stim_off = zeros(num_steps-1,1);
 resp_off = zeros(num_steps-1,1);
 
-% figure
+figure,
 for step = 1:num_steps
     
     stim_win = stim((step-1)*stimperiod+1:(step-1)*stimperiod+L);         % One cycle of stimulus
@@ -35,14 +35,16 @@ for step = 1:num_steps
         
         corr_est(k+1) = stim_win*-(stim_win-resp_win)';                                 % Calculate inner product, that is, xcorr at phase k.
         
-%         if k == 0
-%             subplot(1,2,1)
-%             hold on
-%             plot(stim_win)
-%             subplot(1,2,2)
-%             hold on
-%             plot(resp_win)
-%         end
+        if k == 0
+            subplot(1,2,1)
+            hold on
+            plot(stim_win)
+            title([ num2str(stimfreq) ', ' num2str(Fs)])
+
+            subplot(1,2,2)
+            hold on
+            plot(resp_win)
+        end
     end
     
     [corr(step), phaseIdx] = nanmax(corr_est);                              % Find max of xcorr.

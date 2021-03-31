@@ -134,6 +134,11 @@ for flyidx = 1:length(flies)
                     % Smooth response
                     rel_resp = smooth(rel_resp,8);
                     
+                    % flip resp and stim for this dataset, so initial
+                    % deflection is positive angle
+                    rel_resp = -rel_resp;
+                    aligned_stim = -aligned_stim;
+                    
                     headroll(flyidx).cond(cidx).freq(freqidx).trial(:,trialidx) = rel_resp;
                     framerates(flyidx).cond(cidx).freq(freqidx).trial(:,trialidx) = fps;
                     stims(flyidx).cond(cidx).freq(freqidx).trial(:,trialidx) = aligned_stim;

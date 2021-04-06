@@ -196,13 +196,13 @@ end
             aligned_stim(:,1:3) = -aligned_stim(:,1:3);
 %  ref_stim = -ref_stim;
    end
-%            %{
+           %{
             figure(1000+stim_freq*100)
             hold on
             plot(ref_stim,'color',[0 0 0 0.3])
             plot(aligned_stim(:,3),'color',[0 0 1 0.3])
             %plot(aligned_resp(:,3),'color',[1 0 0 0.3])
-%             %}
+            %}
 
         
 if min(aligned_stim(:,4)) == 0

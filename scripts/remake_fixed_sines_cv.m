@@ -12,10 +12,10 @@ cond_array(1,:) = [2,3];                     % numbers of conditions to be inclu
 cond_array(2,:) = [1,3];
 
 
-fpsarray = [50, 50, 60, 125, 250, 500, 500, 500, 1000];
-
+% f1 = [0.06 0.1 0.3 0.6 1.001 3.003 6.006 10.01 15.148];
 f1 = [0.06 0.1 0.3 0.6 1 3 6 10 15];
 f2 = [15,20,25];
+fpsarray = [50, 50, 60, 125, 250, 500, 500, 500, 1000];
 
 stimfreqs = sort(unique([f1,f2]));
 freqs = roundn(stimfreqs,-2);
@@ -75,11 +75,11 @@ for flyidx = 1:length(flies)
                     
                     fps = fpsarray(freqidx);
                     % For fly10, there is problem for 1 Hz and C3: The sampling
-                    % frequency / frame rate was as 125 Hz instead of 250 Hz.
-                    
+                    % frequency / frame rate was as 125 Hz instead of 250 Hz.                                       
                     if ( fly*10+condidx == 103 ) && (freq == 1)
                         fps = fps/2;
                     end
+                 
                     
                     % Load raw Labview data: (8 channels)
                     eval(strcat('resp_data = response_',int2str(name_array(2,freqidx+2)),'_1;'));
@@ -136,8 +136,13 @@ for flyidx = 1:length(flies)
                     
                     % flip resp and stim for this dataset, so initial
                     % deflection is positive angle
+                    if freq ~= 15
                     rel_resp = -rel_resp;
                     aligned_stim = -aligned_stim;
+                    else
+                        rel_resp(1:16)=[];
+                        aligned_stim(1:16)=[];
+                    end
                     
                     headroll(flyidx).cond(cidx).freq(freqidx).trial(:,trialidx) = rel_resp;
                     framerates(flyidx).cond(cidx).freq(freqidx).trial(:,trialidx) = fps;
@@ -147,12 +152,23 @@ for flyidx = 1:length(flies)
                     % calculate closed loop gain and phase
                     clear CL_*
                     Fs = fps;
+                 
                     stim = aligned_stim;
                     if size(stim,1) > size(stim,2)
                         stim = stim';
                     end
                     stimfreq = freq;
-                    
+                    switch freq
+                        case 15
+%                             stimfreq = 15.15;
+                        stimfreq = 15.148;  
+                        case 10
+                            stimfreq = 10.01; 
+                        case 6
+                            stimfreq = 6.006;
+                        case 3 
+                            stimfreq = 3.003;
+                    end
                     if size(rel_resp,1) > size(rel_resp,2)
                         rel_resp = rel_resp';
                     end
@@ -168,17 +184,17 @@ for flyidx = 1:length(flies)
                     resp_phase(flyidx,freqidx,trialidx,cidx) = CL_phase;
                     resp_gain_std(flyidx,freqidx,trialidx,cidx) = CL_gain_std;
                     resp_phase_std(flyidx,freqidx,trialidx,cidx) = CL_phase_std;
-                      
                           
                     % reshape resp to store individual cycles: keep adding
                     % to store all cycles from all trials to the same fly
                     if length(respcycles)<flyidx || length(respcycles(flyidx).cond)<cidx || length(respcycles(flyidx).cond(cidx).freq)<freqidx || isempty(respcycles(flyidx).cond(cidx).freq)
-                        respcycles(flyidx).cond(cidx).freq{freqidx} = reshape( rel_resp(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1);
-                        stimcycles(flyidx).cond(cidx).freq{freqidx} = reshape( stim(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1);
+                        respcycles(flyidx).cond(cidx).freq{freqidx} = trial_cycles.resp;
+                        stimcycles(flyidx).cond(cidx).freq{freqidx} = trial_cycles.stim;
                     else
-                        respcycles(flyidx).cond(cidx).freq{freqidx} = [respcycles(flyidx).cond(cidx).freq{freqidx}, reshape( rel_resp(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1) ];
-                        stimcycles(flyidx).cond(cidx).freq{freqidx} = [stimcycles(flyidx).cond(cidx).freq{freqidx}, reshape( stim(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1) ];
+                        respcycles(flyidx).cond(cidx).freq{freqidx} = [respcycles(flyidx).cond(cidx).freq{freqidx}, trial_cycles.resp ];
+                        stimcycles(flyidx).cond(cidx).freq{freqidx} = [stimcycles(flyidx).cond(cidx).freq{freqidx}, trial_cycles.stim ];
                     end
+                    
                 end
             end
             %}
@@ -287,11 +303,11 @@ for flyidx = 1:length(flies)
                             % reshape resp to store individual cycles: keep adding
                             % to store all cycles from all trials to the same fly
                             if length(respcycles)<flyidx || length(respcycles(flyidx).cond)<cidx || length(respcycles(flyidx).cond(cidx).freq)<freqidx || isempty(respcycles(flyidx).cond(cidx).freq)
-                                respcycles(flyidx).cond(cidx).freq{freqidx} = reshape( rel_resp(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1);
-                                stimcycles(flyidx).cond(cidx).freq{freqidx} = reshape( stim(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1);
+                                respcycles(flyidx).cond(cidx).freq{freqidx} = trial_cycles.resp;
+                                stimcycles(flyidx).cond(cidx).freq{freqidx} = trial_cycles.stim;
                             else
-                                respcycles(flyidx).cond(cidx).freq{freqidx} = [respcycles(flyidx).cond(cidx).freq{freqidx}, reshape( rel_resp(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1) ];
-                                stimcycles(flyidx).cond(cidx).freq{freqidx} = [stimcycles(flyidx).cond(cidx).freq{freqidx}, reshape( stim(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1) ];
+                                respcycles(flyidx).cond(cidx).freq{freqidx} = [respcycles(flyidx).cond(cidx).freq{freqidx}, trial_cycles.resp ];
+                                stimcycles(flyidx).cond(cidx).freq{freqidx} = [stimcycles(flyidx).cond(cidx).freq{freqidx}, trial_cycles.stim ];
                             end
                             
                         else % condition folder doesn't exist

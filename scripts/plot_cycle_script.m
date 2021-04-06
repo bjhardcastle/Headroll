@@ -47,7 +47,7 @@ for cidx = condSelect
                     resp = resp';
                     thisfps = framerates(flyidx).cond(cidx).freq(freqidx).trial;
                     thisfreq = stimfreqs(freqidx);
-
+                    
                     for cycidx = 1:size(resp,1)
                         % Then interpolate the current trial data to fit the time points in the
                         % standard trial (timeVector)
@@ -76,34 +76,52 @@ for cidx = condSelect
         allcycStd = nanstd(allrespcyc,[],2);
         
         ct = ct+1;
-        subplot(2,length(sfIdx),ct)
+        subplot(1,length(sfIdx),ct)
         hold on
-
-%         plot(allrespcyc,'Color',[color_mat{cidx} 0.02],'LineWidth',0.01)
-                plot(allstimcyc,'Color',[color_mat{cidx} 0.02],'LineWidth',0.01)
-plot(stimcycleideal,'Color',midGreyCol,'LineWidth',defaultLineWidth)
+        
+        if cycleshadederror
+            
+            lineprops.col = {color_mat{cidx}};
+            lineprops.width = defaultLineWidth;
+            
+            h1{cidx} = mseb(linspace(1,length(allcycMean)),allcycMean',allcycStd',lineprops,1);      
+%             mseb(allrespcyc,'Color',[color_mat{cidx} 0.02],'LineWidth',0.01)
+            
+            plot(stimcycleideal,'Color',midGreyCol,'LineWidth',defaultLineWidth)
+  
+        else
+            
+            plot(allrespcyc,'Color',[color_mat{cidx} 0.02],'LineWidth',0.01)
+            
+            % to confirm freq/fps/phase of stim cycles (testing):
+            % plot(allstimcyc,'Color',[color_mat{cidx} 0.02],'LineWidth',0.01)
+            
+            plot(stimcycleideal,'Color',midGreyCol,'LineWidth',defaultLineWidth)
+            
+        end
+        
         t = title (['', num2str(roundn(thisfreq,rndn)), ' Hz']);
         
         %         title(['N = ' num2str(size(allcyc,2))],'FontSize',6)
         %         plot(allcycMean,'Color',[plotcol 0.8],'LineWidth',2)
         ylim([-65,65])
-       
+        
         set(gca,'ytick',[-30,0,30])
         set(gca,'yticklabel',{'-30','','30'})
         set(gca,'xtick',[1 cycsamples])
         set(gca,'xticklabel',[])
-                
-%         daspect([100 60 1])
-
+        
+        %         daspect([100 60 1])
+        
         set(gca,'clipping','off')
-%         daspect(gca,[100 80 1])
+        %         daspect(gca,[100 80 1])
         ax = gca;
         ax.XAxis.Visible = 'off';
         ax.YAxis.Label.String = 'Roll angle (\circ)';
         if ct > 1
             ax.YAxis.Visible = 'off';
         else
-            trimYAxisToLims(gca) 
+            trimYAxisToLims(gca)
         end
         
         setHRaxes(gca,2.38,1.5)
@@ -113,12 +131,12 @@ plot(stimcycleideal,'Color',midGreyCol,'LineWidth',defaultLineWidth)
         end
         if length(respcycles) < Nmin
             Nmin = length(respcycles);
-        end  
-
+        end
+        
     end
     %     linkaxes
     tightfig(gcf)
-
+    
     
     if Nmin == Nmax
         suffix = ['C' num2str(cidx) '_N=' num2str(Nmin)];

@@ -6,15 +6,15 @@ gain = [];
 
 % save_command_G = strcat('G_fly',int2str(flyidx),'.cond',int2str(cidx),'.freq',int2str(freqs(freqidx)),'=step_vector_G;');
 
-stimperiod = round(Fs/stimfreq);                                            % Stimulus Period in samples
-num_steps = floor(length(stim)/stimperiod)-1;                               % number of cycles which can be individually analyzed
+stimperiod = (Fs/stimfreq);                                            % Stimulus Period in samples
+
+% L = 2*floor(stimperiod/2);                                                  % Length of each cycke (in samples)
+L = round(Fs/stimfreq);
+num_steps = floor(length(stim)/L)-1;                               % number of cycles which can be individually analyzed
+
 if length(stim) == stimperiod
     num_steps = 1;
 end
-% L = 2*floor(stimperiod/2);                                                  % Length of each cycke (in samples)
-L = stimperiod;
-
-
 
 step_vector_G = zeros(num_steps-1,1);
 stim_off = zeros(num_steps-1,1);
@@ -35,6 +35,15 @@ for step = 1:num_steps
         resp_win = resp_win - resp_off(step);                               % Remove offset
         
         corr_est(k+1) = stim_win*resp_win';                                 % Calculate inner product, that is, xcorr at phase k.
+        
+         % store stim and resp cycles
+        if step == 1
+            trial_cycles = struct('resp',[],'stim',[]);
+        end
+        if k == 0
+            trial_cycles.resp(:,step) = resp_win;
+            trial_cycles.stim(:,step) = stim_win;            
+        end
         
     end
     

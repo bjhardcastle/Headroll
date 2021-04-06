@@ -129,6 +129,8 @@ modeplot = 1;
 shadederror = 0;
 manualstim=1;
 
+%% individual cycle options 
+cycleshadederror = 0; 
 
 %% bode plot options
 bodererun = 1; % re-run analysis and save data

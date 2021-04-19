@@ -191,11 +191,11 @@ aligned_stim(:,arIdx) = aligned_stim(:,arIdx) - mean(aligned_stim(:,arIdx));
 aligned_resp(:,arIdx) = aligned_resp(:,arIdx) -  mean(aligned_resp(:,arIdx));
 end
 
-   if xcorr(aligned_stim(:,3)',ref_stim,0) < 0
-                       aligned_resp(:,1:3) = -aligned_resp(:,1:3);
-            aligned_stim(:,1:3) = -aligned_stim(:,1:3);
-%  ref_stim = -ref_stim;
-   end
+if xcorr(aligned_stim(:,3)',ref_stim,0) < 0
+    aligned_resp(:,1:3) = -aligned_resp(:,1:3);
+    aligned_stim(:,1:3) = -aligned_stim(:,1:3);
+    %  ref_stim = -ref_stim;
+end
            %{
             figure(1000+stim_freq*100)
             hold on
@@ -205,10 +205,24 @@ end
             %}
 
         
-if min(aligned_stim(:,4)) == 0
-    aligned_stim(:,3) = ref_stim;    
-end
 
+            amp =  round((max(aligned_stim(2:end-1,3)) - min(aligned_stim(2:end-1,3))) /2);
+            if amp > 30
+                for arIdx = 1:3
+                    aligned_resp(:,arIdx) = aligned_resp(:,arIdx).*30./amp;
+                    aligned_stim(:,arIdx) = aligned_stim(:,arIdx).*30./amp;
+                end
+            end
+            if min(aligned_stim(:,4)) == 0
+                aligned_stim(:,3) = ref_stim;
+            end
+%             amp =  round((max(aligned_stim(2:end-1,3)) - min(aligned_stim(2:end-1,3))) /2);
+%             if amp > 30
+%                 for arIdx = 1:3
+%                     aligned_resp(:,arIdx) = aligned_resp(:,arIdx).*30./amp;
+%                     aligned_stim(:,arIdx) = aligned_stim(:,arIdx).*30./amp;
+%                 end
+%             end
 
 if plot_flag == 1
     %   Plots

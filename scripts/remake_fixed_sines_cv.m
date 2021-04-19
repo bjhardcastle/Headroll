@@ -174,11 +174,9 @@ for flyidx = 1:length(flies)
                     end
                     resp = rel_resp;
                        
-                    if bode_rel_first
-                        cv_calc_gain_phase_rel;
-                    else
-                        cv_calc_gain_phase;
-                    end
+             
+                    calc_gain_phase;
+                    
                     
                     resp_gain(flyidx,freqidx,trialidx,cidx) = CL_gain;
                     resp_phase(flyidx,freqidx,trialidx,cidx) = CL_phase;
@@ -289,12 +287,10 @@ for flyidx = 1:length(flies)
                             if size(rel_resp,1) > size(rel_resp,2)
                                 rel_resp = rel_resp';
                             end
-                            resp = rel_resp;
-                            if bode_rel_first
-                                cv_calc_gain_phase_rel;
-                            else
-                                cv_calc_gain_phase;
-                            end
+                            resp = rel_resp;                           
+                           
+                            calc_gain_phase;
+                          
                             resp_gain(flyidx,freqidx,trialidx,cidx) = CL_gain;
                             resp_phase(flyidx,freqidx,trialidx,cidx) = CL_phase;
                             resp_gain_std(flyidx,freqidx,trialidx,cidx) = CL_gain_std;

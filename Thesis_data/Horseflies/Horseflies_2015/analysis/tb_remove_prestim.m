@@ -128,26 +128,22 @@ if stim_freq >= 12 && stim_freq <30
     ref_stim = x(twoSec+1:end-twoSec);
     
 end
-amp =  round((max(aligned_stim(2:end-1,3)) - min(aligned_stim(2:end-1,3))) /2);
 
 % try to get rid of offset resulting from starting vid analysis at non-zero angle
 for arIdx = 1:3
     aligned_resp(:,arIdx) = aligned_resp(:,arIdx) -  mean(aligned_resp(:,arIdx));
-    if amp > 30
-        aligned_resp(:,arIdx) = aligned_resp(:,arIdx).*30./amp;
-    end
+    aligned_stim(:,arIdx) = aligned_stim(:,arIdx) - mean(aligned_stim(:,arIdx));
 end
 
 
 % if stim_freq >= 12 && stim_freq <30
     % lots of errors so just use the reference stim trace
-        actual_stim = aligned_stim(:,3);
         
-        if xcorr(actual_stim',ref_stim,0) < 0
+        if xcorr(aligned_stim(:,3)',ref_stim,0) < 0
             %ref_stim = -ref_stim;
             aligned_resp(:,1:3) = -aligned_resp(:,1:3);
-            actual_stim = -actual_stim;
-
+            aligned_stim(:,1:3) = -aligned_stim(:,1:3);
+           
             %{
             figure
             hold on
@@ -156,14 +152,38 @@ end
             plot(aligned_resp(:,3),'k')
             %}
         end
-        aligned_stim = ref_stim;
-        ref_stim = actual_stim;
+       
+        
+        
+            amp =  round((max(aligned_stim(2:end-1,3)) - min(aligned_stim(2:end-1,3))) /2);
+            if amp > 30
+                for arIdx = 1:3
+                    aligned_resp(:,arIdx) = aligned_resp(:,arIdx).*30./amp;
+                    aligned_stim(:,arIdx) = aligned_stim(:,arIdx).*30./amp;
+                end
+            end
+            if min(aligned_stim(:,4)) == 0
+                aligned_stim(:,3) = ref_stim;
+            end
+            amp =  round((max(aligned_stim(2:end-1,3)) - min(aligned_stim(2:end-1,3))) /2);
+            if amp > 30
+                for arIdx = 1:3
+                    aligned_resp(:,arIdx) = aligned_resp(:,arIdx).*30./amp;
+                    aligned_stim(:,arIdx) = aligned_stim(:,arIdx).*30./amp;
+                end
+            end
+
+%         aligned_stim = ref_stim;
+%         ref_stim = actual_stim;
+        
       
+    
 % 
 % else
 %     aligned_stim = aligned_stim(:,3);    
 % end
 % 
+actual_stim =  aligned_stim(:,3);    
 
 if plot_flag == 1
     %   Plots

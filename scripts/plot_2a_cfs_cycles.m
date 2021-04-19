@@ -25,7 +25,6 @@ color_mat{condSelect(1)} = cv_col;
 color_mat{condSelect(2)} = darkGreyCol;
 legCell = {'no ocelli';'no halteres'};
 
-% plot_bode_script
 plot_cycle_script
 
 %% horsefly
@@ -55,7 +54,6 @@ color_mat{condSelect(1)} = tb_col;
 color_mat{condSelect(2)} = darkGreyCol;
 legCell = {'no ocelli';'no ocelli, dark';'no halteres';'no halteres, dark'};
 
-% plot_bode_script
 plot_cycle_script
 
 %% hoverfly
@@ -89,7 +87,6 @@ color_mat{condSelect(1)} = ea_col;
 color_mat{condSelect(2)} = darkGreyCol;
 legCell = {'intact';'no ocelli';'no halteres'};
 
-% plot_bode_script
 plot_cycle_script
 
 %% model - need to save 'respcycles' and 'stimcycles' in 'remake_model_head'

@@ -76,6 +76,7 @@ for flyidx = 1:length(flies)
                     
                     % Get reference stim and aligned response data
                     [stim,trimmed_data,aligned_stim,fps] = ea_remove_prestim(stim_data,resp_data,freqs(freqidx),bodecheckplots);
+                    aligned_stim = aligned_stim(:,3);
                     
                     data = trimmed_data;
                     %aligned_stim = aligned_stim(:,3);
@@ -124,6 +125,17 @@ for flyidx = 1:length(flies)
                     Fs = fps;
                     stim = aligned_stim;
                     stimfreq = freq;
+                    switch freq
+                        case 15
+                            %                             stimfreq = 15.15;
+                            stimfreq = 15;
+                        case 10
+                            stimfreq = 10;
+                        case 6
+                            stimfreq = 6.006;
+                        case 3
+                            stimfreq = 3.003;
+                    end
                     if size(stim,1) > size(stim,2)
                          stim = stim';  
                     end
@@ -132,26 +144,24 @@ for flyidx = 1:length(flies)
                     end
                     resp = rel_resp;
                    
-                    if bode_rel_first
-                        ea_calc_gain_phase_rel;
-                    else
-                        ea_calc_gain_phase;
-                    end
+                   calc_gain_phase;
+                   
                     
                     resp_gain(flyidx,freqidx,trialidx,cidx) = CL_gain;
                     resp_phase(flyidx,freqidx,trialidx,cidx) = CL_phase;
                     resp_gain_std(flyidx,freqidx,trialidx,cidx) = CL_gain_std;
                     resp_phase_std(flyidx,freqidx,trialidx,cidx) = CL_phase_std;
                        
-                    % reshape resp to store individual cycles: keep adding
-                    % to store all cycles from all trials to the same fly
-                    if length(respcycles)<flyidx || length(respcycles(flyidx).cond)<cidx || length(respcycles(flyidx).cond(cidx).freq)<freqidx || isempty(respcycles(flyidx).cond(cidx).freq)
-                        respcycles(flyidx).cond(cidx).freq{freqidx} = reshape( rel_resp(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1);
-                        stimcycles(flyidx).cond(cidx).freq{freqidx} = reshape( stim(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1);
-                    else
-                        respcycles(flyidx).cond(cidx).freq{freqidx} = [respcycles(flyidx).cond(cidx).freq{freqidx}, reshape( rel_resp(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1) ];
-                        stimcycles(flyidx).cond(cidx).freq{freqidx} = [stimcycles(flyidx).cond(cidx).freq{freqidx}, reshape( stim(1:stimperiod*(num_steps+1)), stimperiod, num_steps+1) ];
-                    end
+                       % reshape resp to store individual cycles: keep adding
+                                    % to store all cycles from all trials to the same fly
+                                    if length(respcycles)<flyidx || length(respcycles(flyidx).cond)<cidx || length(respcycles(flyidx).cond(cidx).freq)<freqidx || isempty(respcycles(flyidx).cond(cidx).freq)
+                                        respcycles(flyidx).cond(cidx).freq{freqidx} = trial_cycles.resp;
+                                        stimcycles(flyidx).cond(cidx).freq{freqidx} = trial_cycles.stim;
+                                    else
+                                        respcycles(flyidx).cond(cidx).freq{freqidx} = [respcycles(flyidx).cond(cidx).freq{freqidx}, trial_cycles.resp ];
+                                        stimcycles(flyidx).cond(cidx).freq{freqidx} = [stimcycles(flyidx).cond(cidx).freq{freqidx}, trial_cycles.stim ];
+                                    end
+                                    
                             
                 else % condition folder doesn't exist
                     trial_nexist_flag = 1;

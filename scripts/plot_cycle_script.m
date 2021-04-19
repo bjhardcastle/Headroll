@@ -47,20 +47,26 @@ for cidx = condSelect
                     resp = resp';
                     thisfps = framerates(flyidx).cond(cidx).freq(freqidx).trial;
                     thisfreq = stimfreqs(freqidx);
-                    
-                    for cycidx = 1:size(resp,1)
+                 
+                
+                    for cycidx = 1:size(resp,2)
                         % Then interpolate the current trial data to fit the time points in the
                         % standard trial (timeVector)
                         fitcyc = interp1( linspace(0,1/thisfreq,size(resp,2)) , resp(cycidx,:) , linspace(0,1/thisfreq, cycsamples) );
                         fitcyc = fitcyc - nanmean(fitcyc);
-                        % figure,plot(fitcyc),pause(0.1),close gcf
-                        allrespcyc = [allrespcyc; fitcyc];
+%                         if (cidx == 3 && any(ismember(flyidx,[5,6,7,8]))) || (cidx == 1 && flyidx==8)
+%                             fitcyc = fitcyc./2;
+%                         end
+                        if ~all(fitcyc==0)
+                            allrespcyc = [allrespcyc; fitcyc];
+                        end
                         
                         fitcyc = interp1( linspace(0,1/thisfreq,size(stim,2)) , stim(cycidx,:) , linspace(0,1/thisfreq, cycsamples) );
                         fitcyc = fitcyc - nanmean(fitcyc);
                         % figure,plot(fitcyc),pause(0.1),close gcf
-                        allstimcyc = [allstimcyc; fitcyc];
-                        
+                        if ~all(fitcyc==0)
+                            allstimcyc = [allstimcyc; fitcyc];
+                        end
                     end
                 catch
                     disp('some cycles different length/framerate')
@@ -91,10 +97,11 @@ for cidx = condSelect
   
         else
             
-            plot(allrespcyc,'Color',[color_mat{cidx} 0.02],'LineWidth',0.01)
-            
-            % to confirm freq/fps/phase of stim cycles (testing):
-            % plot(allstimcyc,'Color',[color_mat{cidx} 0.02],'LineWidth',0.01)
+            % % actual data:
+                   plot(allrespcyc,'Color',[color_mat{cidx} 0.05],'LineWidth',0.01)
+     
+            % % to confirm freq/fps/phase of stim cycles (testing):
+%             plot(allstimcyc(:,2:end),'Color',[color_mat{cidx} 0.02],'LineWidth',0.01)
             
             plot(stimcycleideal,'Color',midGreyCol,'LineWidth',defaultLineWidth)
             

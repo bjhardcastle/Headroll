@@ -21,8 +21,11 @@ end
 stimfreqs = stimfreqs(~isnan(stimfreqs));
 [~,sfIdx] = ismember(stimfreqVec,  roundn(stimfreqs,rndn));
    fpsVec = fpsVec( sfIdx(sfIdx>0 ) );
-    
+   
+        disp('Using actual gain/phase data')
+
 else
+    disp('Using toy gain/phase data')
     % choose manually constructed toy data
 flyname = 'tb';
 switch flyname

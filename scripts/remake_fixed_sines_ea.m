@@ -25,6 +25,7 @@ trial_nexist_flag = 1;
 
 headroll = struct();
 respcycles = struct('cond',struct('freq',[]));
+relrespcycles = struct('cond',struct('freq',[]));
 stimcycles = struct('cond',struct('freq',[]));
 resp_gain = nan(length(flies),length(stimfreqs),10,3);
 resp_phase = nan(length(flies),length(stimfreqs),10,3);
@@ -101,15 +102,21 @@ for flyidx = 1:length(flies)
                     os = mean(resp_AC);
                     resp = resp_AC - os;
                     
-                    % Thorax roll - head roll
-                    if bode_rel_first  
-                        rel_resp = aligned_stim - resp;
-                    else
-                        rel_resp = resp;
-                    end
-                    
-                    % Smooth response
-                    rel_resp = smooth(rel_resp,8);
+                                         % relative response:
+                            % Thorax roll - head roll
+                            rel_resp = aligned_stim - resp;
+                            % Smooth response
+                            rel_resp = smooth(rel_resp,8);
+                            
+                            % abs response:
+                            % Smooth response
+                            resp = smooth(resp,8);
+                            
+                            if bode_rel_first
+                               resp_used = rel_resp;
+                            else
+                                resp_used = resp;
+                            end
                     
                     %                         eval(strcat('headroll.fly',num2str(flyidx),'.cond',num2str(cidx),'.freq',num2str(floor(freqs(freqidx))),'.trial(:,',num2str(trialidx),')=rel_resp;'));
                     %                         eval(strcat('framerates.fly',num2str(flyidx),'.cond',num2str(cidx),'.freq',num2str(floor(freqs(freqidx))),'.trial(:,',num2str(trialidx),')=fps;'));
@@ -117,7 +124,7 @@ for flyidx = 1:length(flies)
                     
                     %                         headroll(flyidx).cond(cidx).freq(freqidx).trial(:,trialidx) = rel_resp;
                     %
-                    headroll(flyidx).cond(cidx).freq(freqidx).trial(:,trialidx) = rel_resp;
+                    headroll(flyidx).cond(cidx).freq(freqidx).trial(:,trialidx) = resp_used;
                     framerates(flyidx).cond(cidx).freq(freqidx).trial(:,trialidx) = fps;
                     stims(flyidx).cond(cidx).freq(freqidx).trial(:,trialidx)= aligned_stim;
                     
@@ -139,10 +146,9 @@ for flyidx = 1:length(flies)
                     if size(stim,1) > size(stim,2)
                          stim = stim';  
                     end
-                    if size(rel_resp,1) > size(rel_resp,2)
-                        rel_resp = rel_resp';
+                    if size(resp_used,1) > size(resp_used,2)
+                        resp_used = resp_used';
                     end
-                    resp = rel_resp;
                    
                    calc_gain_phase;
                    
@@ -152,16 +158,17 @@ for flyidx = 1:length(flies)
                     resp_gain_std(flyidx,freqidx,trialidx,cidx) = CL_gain_std;
                     resp_phase_std(flyidx,freqidx,trialidx,cidx) = CL_phase_std;
                        
-                       % reshape resp to store individual cycles: keep adding
-                                    % to store all cycles from all trials to the same fly
-                                    if length(respcycles)<flyidx || length(respcycles(flyidx).cond)<cidx || length(respcycles(flyidx).cond(cidx).freq)<freqidx || isempty(respcycles(flyidx).cond(cidx).freq)
-                                        respcycles(flyidx).cond(cidx).freq{freqidx} = trial_cycles.resp;
-                                        stimcycles(flyidx).cond(cidx).freq{freqidx} = trial_cycles.stim;
-                                    else
-                                        respcycles(flyidx).cond(cidx).freq{freqidx} = [respcycles(flyidx).cond(cidx).freq{freqidx}, trial_cycles.resp ];
-                                        stimcycles(flyidx).cond(cidx).freq{freqidx} = [stimcycles(flyidx).cond(cidx).freq{freqidx}, trial_cycles.stim ];
-                                    end
-                                    
+                    % reshape resp to store individual cycles: keep adding
+                    % to store all cycles from all trials to the same fly
+                    if length(respcycles)<flyidx || length(respcycles(flyidx).cond)<cidx || length(respcycles(flyidx).cond(cidx).freq)<freqidx || isempty(respcycles(flyidx).cond(cidx).freq)
+                        respcycles(flyidx).cond(cidx).freq{freqidx} = trial_cycles.resp;
+                        relrespcycles(flyidx).cond(cidx).freq{freqidx} = trial_cycles.rel_resp;
+                        stimcycles(flyidx).cond(cidx).freq{freqidx} = trial_cycles.stim;
+                    else
+                        respcycles(flyidx).cond(cidx).freq{freqidx} = [respcycles(flyidx).cond(cidx).freq{freqidx}, trial_cycles.resp ];
+                        relrespcycles(flyidx).cond(cidx).freq{freqidx} = [relrespcycles(flyidx).cond(cidx).freq{freqidx}, trial_cycles.rel_resp ];
+                        stimcycles(flyidx).cond(cidx).freq{freqidx} = [stimcycles(flyidx).cond(cidx).freq{freqidx}, trial_cycles.stim ];
+                    end
                             
                 else % condition folder doesn't exist
                     trial_nexist_flag = 1;
@@ -188,9 +195,9 @@ resp_phase_std_mean = circ_std(resp_phase_std*pi/180,[],[],3)*180/pi;
 resp_phase_std_mean(isnan(resp_gain_std_mean)) = nan;
 
 if bode_rel_first
-    save(fullfile(rootpathHR,'..\mat\DATA_ea_fixed_sines_rel_first.mat'),'headroll','framerates','stims','flies','stimfreqs','respcycles','stimcycles');
+    save(fullfile(rootpathHR,'..\mat\DATA_ea_fixed_sines_rel_first.mat'),'headroll','framerates','stims','flies','stimfreqs','respcycles','stimcycles','relrespcycles');
     save(fullfile(rootpathHR,'..\mat\DATA_ea_gain_phase_rel_first.mat'),'resp_gain_mean','resp_phase_mean','resp_gain_std','resp_phase_std', 'step_G','stimfreqs');
 else
-    save(fullfile(rootpathHR,'..\mat\DATA_ea_fixed_sines.mat'),'headroll','framerates','stims','flies','stimfreqs','respcycles','stimcycles');
+    save(fullfile(rootpathHR,'..\mat\DATA_ea_fixed_sines.mat'),'headroll','framerates','stims','flies','stimfreqs','respcycles','stimcycles','relrespcycles');
     save(fullfile(rootpathHR,'..\mat\DATA_ea_gain_phase.mat'),'resp_gain_mean','resp_phase_mean','resp_gain_std','resp_phase_std', 'step_G','stimfreqs');
 end

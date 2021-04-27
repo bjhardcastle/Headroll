@@ -144,7 +144,7 @@ bodeshadederror = 0;
 bodesubplots = 0; %1, gain+phase plots in one fig; 0, separate figs
 bodecheckplots = 0; % 1, plot individual time-series when aligning/removing pre-stim/refstim
 
-bodeprintflag = 0;
+bodeprintflag = 1;
 
 bodeReconstructSlipspeeds = 0; % sanity check 
 %% Model functions **

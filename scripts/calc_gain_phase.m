@@ -18,6 +18,8 @@ end
 step_vector_G = zeros(num_steps-1,1);
 stim_off = zeros(num_steps-1,1);
 resp_off = zeros(num_steps-1,1);
+rel_resp_off = zeros(num_steps-1,1);
+gain = zeros(num_steps-1,1);
 
 % if  round(freq) == 3, figure, end
 for step = 1:num_steps
@@ -32,24 +34,35 @@ for step = 1:num_steps
     
     for k = 0:L-1
         
+        % here we make use of both rel_resp and resp so we can store a
+        % record of individual cycles of both:
+        
         resp_win = resp(round((step-1)*stimperiod+k+1):round((step-1)*stimperiod+L+k)); % One cycle of stimulus, shifted by k samples w.r.t stim_win
         resp_off(step) = mean(resp_win);
         resp_win = resp_win - resp_off(step);                               % Remove offset
-        
-        if ~exist('bode_rel_first','var') || ~bode_rel_first
-            corr_est(k+1) = stim_win*(stim_win-resp_win)';                                 % Calculate inner product, that is, xcorr at phase k.
-        else
-            corr_est(k+1) = stim_win*resp_win';                                 % Calculate inner product, that is, xcorr at phase k.
-        end
-        
+       
+        rel_resp_win = rel_resp(round((step-1)*stimperiod+k+1):round((step-1)*stimperiod+L+k)); % One cycle of stimulus, shifted by k samples w.r.t stim_win
+        rel_resp_off(step) = mean(rel_resp_win);
+        rel_resp_win = rel_resp_win - rel_resp_off(step);                               % Remove offset
+       
         % store stim and resp cycles
         if step == 1
-            trial_cycles = struct('resp',[],'stim',[]);
+            trial_cycles = struct('resp',[],'rel_resp',[],'stim',[]);
         end
         if k == 0
             trial_cycles.resp(:,step) = resp_win;
-            trial_cycles.stim(:,step) = stim_win;            
+            trial_cycles.rel_resp(:,step) = rel_resp_win;
+            trial_cycles.stim(:,step) = stim_win;
         end
+        
+        % now calculate xcorr with either rel_resp OR resp
+        if ~exist('bode_rel_first','var') || ~bode_rel_first
+            corr_est(k+1) = stim_win*(stim_win-resp_win)';                                 % Calculate inner product, that is, xcorr at phase k.
+        else
+            corr_est(k+1) = stim_win*rel_resp_win';                                 % Calculate inner product, that is, xcorr at phase k.
+        end
+        
+
         
 %          if k == 0 && round(freq) == 3 
 %            
@@ -76,10 +89,10 @@ for step = 1:num_steps
     
 %{
     % % take 'raw' head angle, subtract from thorax angle
-     resp_win = -( stim_win - resp(round((step-1)*stimperiod+1):round((step-1)*stimperiod+L)) );         % One cycle of stimulus
+     resp_win = -( stim_win - resp_used(round((step-1)*stimperiod+1):round((step-1)*stimperiod+L)) );         % One cycle of stimulus
     
     % take aligned head angle, subtract from thorax angle
-    resp_win = -( stim_win - resp(round((step-1)*stimperiod+phaseIdx):round((step-1)*stimperiod+L+phaseIdx-1)));     % Reconstruct shifted response at max. xcorr.
+    resp_win = -( stim_win - resp_used(round((step-1)*stimperiod+phaseIdx):round((step-1)*stimperiod+L+phaseIdx-1)));     % Reconstruct shifted response at max. xcorr.
         
       % % raw signal:
     % resp_rel = stim_win - (resp_win);
@@ -92,18 +105,19 @@ for step = 1:num_steps
          
     % % or relative headroll (neck actuation):
     gain(step) =  abs(resp_win/stim_win);
-    gain(step) = (stim_win - resp(round((step-1)*stimperiod+phaseIdx):round((step-1)*stimperiod+L+phaseIdx-1)))/stim_win;
+    gain(step) = (stim_win - resp_used(round((step-1)*stimperiod+phaseIdx):round((step-1)*stimperiod+L+phaseIdx-1)))/stim_win;
 
    %}
 
 
-               if ~exist('bode_rel_first','var') || ~bode_rel_first
-          % take aligned head angle, subtract from thorax angle
- resp_win = ( stim_win - resp(round((step-1)*stimperiod+phaseIdx):round((step-1)*stimperiod+L+phaseIdx-1)));     % Reconstruct shifted response at max. xcorr.
-               else
-                    resp_win = -resp(round((step-1)*stimperiod+phaseIdx):round((step-1)*stimperiod+L+phaseIdx-1));     % Reconstruct shifted response at max. xcorr.
-
-               end
+if ~exist('bode_rel_first','var') || ~bode_rel_first
+    % take aligned head angle, subtract from thorax angle
+    resp_win = ( stim_win - resp_used(round((step-1)*stimperiod+phaseIdx):round((step-1)*stimperiod+L+phaseIdx-1)));     % Reconstruct shifted response at max. xcorr.
+else
+    % just take aligned head angle (resp is already relative to thorax
+    % angle)
+    resp_win = -resp_used(round((step-1)*stimperiod+phaseIdx):round((step-1)*stimperiod+L+phaseIdx-1));     % Reconstruct shifted response at max. xcorr.
+end
  gain(step) =  abs(resp_win/stim_win);
    
 

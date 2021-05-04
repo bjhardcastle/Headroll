@@ -31,12 +31,13 @@ lineprops.width = thickLineWidth;
 lineprops.linewidth = thickLineWidth;
 figure
 
-N_array = sum(~isnan(resp_gain_mean(:,:,1,1)));
+% N_array = sum(~isnan(resp_gain_mean(:,:,1,1)));
 gainVec = [];
 for c = 1:length(condSelect)
     cidx = condSelect(end-c+1); % plot in reverse so 'intact' fly data are on top
     
     CLg=squeeze(resp_gain_mean(:,:,:,cidx));
+    N_array = sum(~isnan(CLg));
     if bodeplotdb
         CLg = mag2db(CLg);
     end
@@ -111,8 +112,8 @@ if bodelogXplot
     end
     offsetAxesLogX(gainplot)
 else
-    if ~bodesubplots
-    dr =  [gainplot.YTick(1),gainplot.YTick(end)]/25;
+   if ~bodesubplots
+    dr =  range([gainplot.YTick(1),gainplot.YTick(end)])/25;
     daspect(gainplot,[1,2*dr,1])
     end
     offsetAxes(gainplot)
@@ -157,10 +158,13 @@ phaseVec = [];
 for c = 1:length(condSelect)
     cidx = condSelect(end-c+1);% plot in reverse so 'intact' fly data are on top
     
-    
     CLp=squeeze(resp_phase_mean(:,:,:,cidx));
-    CLpm = circ_mean(CLp*pi/180,[],1)*180/pi;
-    CLpm(CLpm > 90) = -360+CLpm(CLpm>90);
+CLpm = circ_mean(CLp*pi/180,[],1)*180/pi;
+    if ~bode_rel_first
+%     CLpm(CLpm > 70) = -360+CLpm(CLpm>70);
+    else
+%     CLpm(CLpm > -110) = -360+CLpm(CLpm> -110);
+    end
     phaseVec(length(condSelect)-c+1,:) = CLpm;
     CLps = (circ_std(CLp*pi/180,[],[],1)*180/pi)./sqrt(N_array);
     if bodesubplots
@@ -205,9 +209,16 @@ ylabel('Phase (\circ)')
 xlabel('Frequency (Hz)')
 
 ytickinterval = 60;
-ylim1 = -180;
-ylim2 = 60;
-set(phaseplot,'YTick',sort(unique([0:ytickinterval:ylim2,0:-ytickinterval:ylim1])))
+
+if ~bode_rel_first
+    ylim1 = -180;
+    ylim2 = 60;
+    set(phaseplot,'YTick',sort(unique([0:ytickinterval:ylim2,0:-ytickinterval:ylim1])))
+else
+    ylim1 = -360;
+    ylim2 = -120;
+    set(phaseplot,'YTick',sort(unique([ylim1:ytickinterval:ylim2])))
+end
 % axis([-0.5 25.5 min(phaseplot.YTick) max(phaseplot.YTick)+30])
 ylim([ylim1 ylim2])
 phaseplot.YLim(1) = phaseplot.YLim(1) - 0.1*range(phaseplot.YLim);

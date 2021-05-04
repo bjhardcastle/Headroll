@@ -23,6 +23,7 @@ condSelect = [1,2];
 color_mat = {};
 color_mat{condSelect(1)} = cv_col;
 color_mat{condSelect(2)} = darkGreyCol;
+
 legCell = {'no ocelli';'no halteres'};
 
 % plot_bode_script
@@ -81,12 +82,14 @@ getHRplotParams
 flyname = 'ea';
 
 condSelect = [1,2];
+
 % condSelect = [1];
 % 
 color_mat = {};
 color_mat{condSelect(1)} = ea_col;
 color_mat{condSelect(2)} = darkGreyCol;
-legCell = {'intact';'no ocelli';'no halteres'};
+
+legCell = {'no ocelli';'no halteres';'no halteres, dark'};
 
 % plot_bode_script
 plot_slipspeed_script

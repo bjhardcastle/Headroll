@@ -26,6 +26,7 @@ condSelect = [1,2];
 bodecolor_mat = {};
 bodecolor_mat{condSelect(1)} = cv_col;
 bodecolor_mat{condSelect(2)} = darkGreyCol;
+
 legCell = {'no ocelli';'no halteres'};
 
 plot_bode_script
@@ -86,13 +87,13 @@ end
 getHRplotParams
 flyname = 'ea';
 
-condSelect = [2,3];
+condSelect = [1,2];
 % condSelect = [1];
 % 
 bodecolor_mat = {};
 bodecolor_mat{condSelect(1)} = ea_col;
 bodecolor_mat{condSelect(2)} = darkGreyCol;
-legCell = {'intact';'no ocelli';'no halteres'};
+legCell = {'no ocelli';'no halteres';'no halteres, dark'};
 
 % restrict range to those available in other flies:
 stimfreqs(1) = nan;

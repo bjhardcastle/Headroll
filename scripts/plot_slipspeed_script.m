@@ -180,6 +180,8 @@ lineprops.col = {color_mat{c2}};
     % A vertical line for the theoretical peak of the thorax
     hold on
     sl =  plot([2*pi*freq*30 2*pi*freq*30],[0 max(ylim)],'Color','k','LineWidth',defaultLineWidth,'LineStyle','-');
+     sl.LineStyle = '--';
+     sl.Color='k';
     uistack(sl(1), 'bottom')
     
     xlim([0,plotted_as_fraction_of_max_stim*2*pi*freq*30])
@@ -263,6 +265,7 @@ lineprops.col = {[0 0 0]};
 if manualstim
     ls=plot([0 plotfreqs], [0 mean_s],'LineWidth',defaultLineWidth, 'Color',lineprops.col{:});
     ls.LineStyle = '--';
+    ls.Color = 'k';
 else
     if shadederror
         ls=mseb([0 plotfreqs], [0 mean_s], [0 std_s]./sqrt(N_array),lineprops,1);

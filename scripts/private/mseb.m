@@ -182,6 +182,9 @@ for c = C:-1:1
     xP(isnan(yP))=[];
     yP(isnan(yP))=[];
     
+    yP(isnan(xP))=[];
+    xP(isnan(xP))=[];
+    
     if isempty(xP) && isempty(yP) % data were all nans: make an invisible patch to match the invisible line which is plot
         H(c).patch=patch(0,0,1,'facecolor','none',...
             'edgecolor','none',...

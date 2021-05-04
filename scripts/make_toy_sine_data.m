@@ -6,8 +6,8 @@ if exist('phaseVec','var')
     
     % we don't need the actual fps, so just get a reasonable value based on
     % the frequency:
-    fpsVec = [50,50,60,125,250,500,500,500,1000,1200,1200,1200];
-    stimfreqVec = [0.06,0.1,0.3,0.6,1,3,6,10,15,20,25];
+    fpsVec = [50,50,50,60,125,250,500,500,1000,1200,1200,1200];
+    stimfreqVec = [0.03,0.06,0.1,0.3,0.6,1,3,6,10,15,20,25];
 
 switch flyname
     case 'cv'
@@ -18,6 +18,8 @@ switch flyname
         rndn = -2;        
 end
 
+toyPhase = toyPhase(:,~isnan(stimfreqs));
+toyGain = toyGain(:,~isnan(stimfreqs));
 stimfreqs = stimfreqs(~isnan(stimfreqs));
 [~,sfIdx] = ismember(stimfreqVec,  roundn(stimfreqs,rndn));
    fpsVec = fpsVec( sfIdx(sfIdx>0 ) );
@@ -87,7 +89,33 @@ for fidx = 1:length(stimfreqs)
         resp = 30*toyGain(cidx,fidx)*sin(2*pi*stimfreqs(fidx).*t - deg2rad(toyPhase(cidx,fidx)));
         
         resp = circshift((-toyGain(cidx,fidx).*stim ),round(toyPhase(cidx,fidx)*fpsVec(fidx)/(360*stimfreqs(fidx))))+ stim;
-        
+   %% new 
+   
+   r = toyGain(cidx,fidx)*stim;
+   
+        if ~exist('bode_rel_first','var') || ~bode_rel_first
+    % %  take aligned head angle, subtract from thorax angle
+    % % resp_win = ( stim_win - resp_win);   
+      % resp = 30*toyGain(cidx,fidx)*sin(2*pi*stimfreqs(fidx).*t - deg2rad(toyPhase(cidx,fidx)));
+        r0 = stim-r;
+        resp = circshift(r0,-round( (toyPhase(cidx,fidx))*fpsVec(fidx)/(360*stimfreqs(fidx))));
+else
+    % % just take aligned head angle (resp is already relative to thorax
+    % % angle)
+   % % resp_win = resp_win;          
+%        resp = -(circshift((toyGain(cidx,fidx).*stim ),round(toyPhase(cidx,fidx)*fpsVec(fidx)/(360*stimfreqs(fidx)))))+ stim;
+%  resp = resp - mean(resp);
+%%% PREVIOUS GOOD:
+        r0 = circshift(r,-round(toyPhase(cidx,fidx)*fpsVec(fidx)/(360*stimfreqs(fidx))) );
+        resp = r0 + stim;
+ %%%%%%
+        r0 = stim-r;
+        resp = circshift(r0,-round( (toyPhase(cidx,fidx))*fpsVec(fidx)/(360*stimfreqs(fidx))));
+
+        end
+               resp = resp - mean(resp);
+
+%%
         headroll.cond(cidx).freq(fidx).trial(:,1) = resp;
         
         framerates(1).cond(cidx).freq(fidx).trial(1) = fpsVec(fidx);

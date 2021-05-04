@@ -104,7 +104,7 @@ for flyidx = 1:length(flies)
                     
                                          % relative response:
                             % Thorax roll - head roll
-                            rel_resp = aligned_stim - resp;
+                            rel_resp = -(aligned_stim - resp);
                             % Smooth response
                             rel_resp = smooth(rel_resp,8);
                             

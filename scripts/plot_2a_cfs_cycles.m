@@ -8,11 +8,10 @@ clearvars
 getHRplotParams
 
 if bodererun
-    bode_rel_first = 0;
     remake_fixed_sines_cv
     cd(fullfile(rootpathHR))
 else
-    load('..\mat\DATA_cv_fixed_sines');
+    load('..\mat\DATA_cv_fixed_sines_rel_first');
 end
 
 getHRplotParams
@@ -37,11 +36,10 @@ clearvars
 getHRplotParams
 
 if bodererun
-    bode_rel_first = 0;
     remake_fixed_sines_tb
     cd(fullfile(rootpathHR))
 else
-    load('..\mat\DATA_tb_fixed_sines');
+    load('..\mat\DATA_tb_fixed_sines_rel_first');
 end
 
 getHRplotParams
@@ -66,11 +64,10 @@ clearvars
 getHRplotParams
 
 if bodererun
-    bode_rel_first = 0;
     remake_fixed_sines_ea
     cd(fullfile(rootpathHR))
 else
-    load('..\mat\DATA_ea_fixed_sines');
+    load('..\mat\DATA_ea_fixed_sines_rel_first');
 end
 
 % resp_gain_mean(5,:,:,:) = NaN;
@@ -79,17 +76,19 @@ end
 getHRplotParams
 flyname = 'ea';
 
-condSelect = [1,2];
+condSelect = [1,2,3];
 % condSelect = [1];
 % 
 color_mat = {};
 color_mat{condSelect(1)} = ea_col;
 color_mat{condSelect(2)} = darkGreyCol;
-legCell = {'intact';'no ocelli';'no halteres'};
+color_mat{condSelect(3)} = [0 0 0];
+
+legCell = {'no ocelli';'no halteres';'no halteres, dark'};
 
 plot_cycle_script
 
-%% model - need to save 'respcycles' and 'stimcycles' in 'remake_model_head'
+%% model - need to save 'respcycles','relrespcycles' and 'stimcycles' in 'remake_model_head'
 %{
 try
     cd(fullfile(rootpathHR))
@@ -106,7 +105,7 @@ end
 
 clearvars
 getHRplotParams
-load('..\mat\DATA_model_fixed_sines');
+load('..\mat\DATA_model_fixed_sines_rel_first');
 
 flyname = 'model';
 

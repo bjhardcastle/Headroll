@@ -10,7 +10,11 @@ f2ly_array = [1:9];
 
 cond_array(1,:) = [2,3];                     % numbers of conditions to be included
 cond_array(2,:) = [1,3];
-
+% array2: karin2016:
+% c1: intact, lights on
+% c2: intact, dark
+% c3: no halteres, lights on
+% c4: no halteres, dark
 
 % f1 = [0.06 0.1 0.3 0.6 1.001 3.003 6.006 10.01 15.148];
 f1 = [0.06 0.1 0.3 0.6 1 3 6 10 15];
@@ -98,7 +102,6 @@ for flyidx = 1:length(flies)
                     data = stim_data;
                     cv_clean_up;
                     aligned_stim = data(:,3);
-                    stim = data;
                     
                     % Clean resp data
                     data = resp_data;
@@ -124,10 +127,20 @@ for flyidx = 1:length(flies)
                     if size(aligned_stim,2) == size(resp,1) && size(aligned_stim,1) == size(resp,2)
                         aligned_stim = aligned_stim';
                     end
-                            
+                    
+                    % flip resp and stim for this dataset, so initial
+                    % deflection is positive angle
+                    if freq ~= 15
+                    resp = -resp;
+                    aligned_stim = -aligned_stim;
+                    else
+                        resp(1:16)=[];
+                        aligned_stim(1:16)=[];
+                    end
+                    
                             % relative response:
                             % Thorax roll - head roll
-                            rel_resp = aligned_stim - resp;
+                            rel_resp = -(aligned_stim - resp);
                             % Smooth response
                             rel_resp = smooth(rel_resp,8);
                             
@@ -142,15 +155,7 @@ for flyidx = 1:length(flies)
                             end
                             
                     
-                    % flip resp and stim for this dataset, so initial
-                    % deflection is positive angle
-                    if freq ~= 15
-                    resp_used = -resp_used;
-                    aligned_stim = -aligned_stim;
-                    else
-                        resp_used(1:16)=[];
-                        aligned_stim(1:16)=[];
-                    end
+
                     
                     headroll(flyidx).cond(cidx).freq(freqidx).trial(:,trialidx) = resp_used;
                     framerates(flyidx).cond(cidx).freq(freqidx).trial(:,trialidx) = fps;
@@ -243,6 +248,7 @@ for flyidx = 1:length(flies)
                                                 
                             [stim,trimmed_data,aligned_stim,fps] = cv_remove_prestim(stim_data,resp_data,freqs(freqidx),bodecheckplots);
 
+                            
                             aligned_stim = aligned_stim(:,3);
                             
                             % Clean resp data
@@ -272,7 +278,7 @@ for flyidx = 1:length(flies)
                             
                             % relative response:
                             % Thorax roll - head roll
-                            rel_resp = aligned_stim - resp;
+                            rel_resp = -(aligned_stim - resp);
                             % Smooth response
                             rel_resp = smooth(rel_resp,8);
                             

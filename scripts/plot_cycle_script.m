@@ -34,31 +34,37 @@ for cidx = condSelect
     Nmax = 0; Nmin = 99;
     for freqidx = sfIdx
         
-        allrespcyc = []; allstimcyc = [];
+        allrespcyc = []; allstimcyc = []; flymeancyc = [];
         for flyidx = 1:length(respcycles)
             if ~isempty(respcycles(flyidx).cond) ...
                     && length(respcycles(flyidx).cond) >= cidx ...
                     && length(respcycles(flyidx).cond(cidx).freq) >= freqidx ...
                     && ~isempty(respcycles(flyidx).cond(cidx).freq{freqidx})
-                try
+%                 try
                     stim = stimcycles(flyidx).cond(cidx).freq{freqidx};
                     stim = stim';
-                    resp = respcycles(flyidx).cond(cidx).freq{freqidx};
+                    if cycle_rel_resp
+                        resp = relrespcycles(flyidx).cond(cidx).freq{freqidx};
+                    else
+                        resp = respcycles(flyidx).cond(cidx).freq{freqidx};
+                    end
                     resp = resp';
                     thisfps = framerates(flyidx).cond(cidx).freq(freqidx).trial;
                     thisfreq = stimfreqs(freqidx);
-                 
-                
-                    for cycidx = 1:size(resp,2)
+                    
+                                flyrespcyc = [];
+
+                    for cycidx = 1:size(resp,1)
                         % Then interpolate the current trial data to fit the time points in the
                         % standard trial (timeVector)
                         fitcyc = interp1( linspace(0,1/thisfreq,size(resp,2)) , resp(cycidx,:) , linspace(0,1/thisfreq, cycsamples) );
                         fitcyc = fitcyc - nanmean(fitcyc);
-%                         if (cidx == 3 && any(ismember(flyidx,[5,6,7,8]))) || (cidx == 1 && flyidx==8)
-%                             fitcyc = fitcyc./2;
-%                         end
+                        %                         if (cidx == 3 && any(ismember(flyidx,[5,6,7,8]))) || (cidx == 1 && flyidx==8)
+                        %                             fitcyc = fitcyc./2;
+                        %                         end
                         if ~all(fitcyc==0)
                             allrespcyc = [allrespcyc; fitcyc];
+                            flyrespcyc = [flyrespcyc; fitcyc];
                         end
                         
                         fitcyc = interp1( linspace(0,1/thisfreq,size(stim,2)) , stim(cycidx,:) , linspace(0,1/thisfreq, cycsamples) );
@@ -68,42 +74,72 @@ for cidx = condSelect
                             allstimcyc = [allstimcyc; fitcyc];
                         end
                     end
-                catch
-                    disp('some cycles different length/framerate')
-                end
-                %             else
-                %                 disp('conditions not present')
+%                 catch
+%                     disp('some cycles different length/framerate')
+%                 end
+                         
+if ~isempty(flyrespcyc)
+                flymeancyc = [flymeancyc; nanmean(flyrespcyc)];
+            end
+
             end
         end
         
         allstimcyc = allstimcyc';
         allrespcyc = allrespcyc';
+        flymeancyc = flymeancyc';
+        %          if cycle_rel_resp
+        %             allrespcyc = -allrespcyc;
+        %         end
         allcycMean = nanmean(allrespcyc,2);
+        allcycMean = allcycMean - nanmean(allcycMean);
         allcycStd = nanstd(allrespcyc,[],2);
+        
+        
+        flycycMean = nanmean(flymeancyc,2);
+        flymeancyc = flymeancyc - nanmean(flymeancyc);
+        flycycStd = nanstd(flymeancyc,[],2);
         
         ct = ct+1;
         subplot(1,length(sfIdx),ct)
         hold on
+        
+        if cycindiviualflydata
+            indivData = flymeancyc;
+            meanData = flycycMean;
+            varData = flycycStd;
+        else
+            indivData = allrespcyc;
+            meanData = allcycMean;
+            varData = allcycStd;
+        end
+        
         
         if cycleshadederror
             
             lineprops.col = {color_mat{cidx}};
             lineprops.width = defaultLineWidth;
             
-            h1{cidx} = mseb(linspace(1,length(allcycMean)),allcycMean',allcycStd',lineprops,1);      
-%             mseb(allrespcyc,'Color',[color_mat{cidx} 0.02],'LineWidth',0.01)
+            h1{cidx} = mseb(linspace(1,length(meanData)),meanData',varData',lineprops,1);
+            %             mseb(allrespcyc,'Color',[color_mat{cidx} 0.02],'LineWidth',0.01)
             
             plot(stimcycleideal,'Color',midGreyCol,'LineWidth',defaultLineWidth)
-  
+            
         else
             
             % % actual data:
-                   plot(allrespcyc,'Color',[color_mat{cidx} 0.05],'LineWidth',0.01)
-     
+            plot(indivData,'Color',[color_mat{cidx} 0.05],'LineWidth',0.01)
+            
             % % to confirm freq/fps/phase of stim cycles (testing):
-%             plot(allstimcyc(:,2:end),'Color',[color_mat{cidx} 0.02],'LineWidth',0.01)
+            %             plot(allstimcyc(:,2:end),'Color',[color_mat{cidx} 0.02],'LineWidth',0.01)
             
             plot(stimcycleideal,'Color',midGreyCol,'LineWidth',defaultLineWidth)
+            
+            if cycindiviualflydata
+                plot(meanData,'Color',[color_mat{cidx}],'LineWidth',defaultLineWidth)
+                plot(indivData,'Color',[color_mat{cidx} 0.3],'LineWidth',0.3*defaultLineWidth)
+
+            end
             
         end
         

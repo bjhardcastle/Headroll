@@ -44,6 +44,7 @@ end
 
 % compute weighted sum of cos and sin of angles
 r = sum(w.*exp(1i*alpha),dim,'omitnan');
+r(all(isnan(alpha),dim)) = nan;
 
 % obtain mean by
 mu = angle(r);

@@ -1,5 +1,8 @@
 % Some parameter values which are common across plots, for ease of making
 % consistent changes 
+set(groot,'defaultLineLineJoin','Round')
+set(groot,'defaultPatchLineJoin',get(groot,'defaultLineLineJoin'))
+
 thisfilepath = mfilename('fullpath'); 
 rootpathHR = fullfile(fileparts(thisfilepath));
 printpath = fullfile(fileparts(rootpathHR),'plots');
@@ -82,6 +85,8 @@ eb_col = hov_cols{3};
 ea_col = hov_cols{1};
 tb_col = horse_cols{3};
 cv_col = color_mat{2};
+et_col = hov_cols{2};
+et_col = [101,73,49]./255;
 
 % rgb more saturated version of thesis cols
 eb_col = [187 181 48]./255;
@@ -121,20 +126,25 @@ panellayout.chirpTimeseries = 'vertical';
 panellayout.bode = 'horizontal';
 
 
+%% chirp plots
+chirperrorbar = 1;
 
 %% slipspeed mode/median plot options
 SHOWLEGEND = 0;
 plotted_as_fraction_of_max_stim = 1.5; % add to getHRplotParams
 modeplot = 1;
-shadederror = 0;
+shadederror = 1;
 manualstim=1;
 
 %% individual cycle options 
 cycleshadederror = 0; 
 cycle_rel_resp = 0;
-cycindiviualflydata = 0; % plot mean data of each fly rather than all trials
+if cycleshadederror
+    cycindiviualflydata = 1; % plot mean data of each fly rather than all trials
+else
+    cycindiviualflydata = 0; % plot mean data of each fly rather than all trials
+end
 %% bode plot options
-bodererun = 0; % re-run analysis and save data
 bodefilterflag = 0; % run additional low freq filter during analysis
 
 bode_rel_first =  0; % 1, subtract HR from TR before calculating gain/phase; 0, calc phase, then subtract and find gain 
@@ -145,11 +155,14 @@ bodeshadederror = 1;
 bodesubplots = 0; %1, gain+phase plots in one fig; 0, separate figs
 bodecheckplots = 0; %1 , plot individual time-series when aligning/removing pre-stim/refstim
 
-bodeprintflag = 1 ;
-
 bodeReconstructSlipspeeds = 0; % sanity check 
 %% Model functions **
 modelrerun = 0;
+
+%% All plots
+bodeprintflag = 1;
+errorbardots = 1;
+bodererun = 0; % re-run analysis and save data
 
 %% Plot aesthetics ** 
 pdfbkgTransparent = 1;
@@ -160,5 +173,6 @@ defaultAxisWidth_cm = 5;
 axisTickLength = 0.1; % set ticklength  = axisTickLength/ axisDim(max)  in centimeters
 axisLabelFontSize = 8;
 defaultMarkerSize = 5;
+errorbarMarkerSize = 2;
 defaultLineWidth = 0.5;
 thickLineWidth = 1;

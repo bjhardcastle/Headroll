@@ -180,7 +180,7 @@ lineprops.col = {color_mat{c2}};
     % A vertical line for the theoretical peak of the thorax
     hold on
     sl =  plot([2*pi*freq*30 2*pi*freq*30],[0 max(ylim)],'Color','k','LineWidth',defaultLineWidth,'LineStyle','-');
-     sl.LineStyle = '--';
+     sl.LineStyle = ':';
      sl.Color='k';
     uistack(sl(1), 'bottom')
     
@@ -258,20 +258,20 @@ end
 figure('Units','centimeters','Position', [1 1 18 20]);
 hold on
 
-lineprops.linewidth = thickLineWidth;
+lineprops.width = thickLineWidth;
 
 % plot stim
 lineprops.col = {[0 0 0]};
 if manualstim
     ls=plot([0 plotfreqs], [0 mean_s],'LineWidth',defaultLineWidth, 'Color',lineprops.col{:});
-    ls.LineStyle = '--';
+    ls.LineStyle = ':';
     ls.Color = 'k';
 else
     if shadederror
         ls=mseb([0 plotfreqs], [0 mean_s], [0 std_s]./sqrt(N_array),lineprops,1);
     else
         ls=errorbar([0 plotfreqs], [0 mean_s], [0 std_s]./sqrt(N_array),...
-            'LineWidth',lineprops.linewidth, 'Color',lineprops.col{:},'CapSize',0);
+            'LineWidth',lineprops.width, 'Color',lineprops.col{:},'CapSize',0);
     end
 end
 
@@ -279,18 +279,25 @@ end
 lineprops.col = {color_mat{c2}};
 if shadederror
     l2=mseb(plotfreqs, mean_2,std_2./sqrt(N_array),lineprops,1);
+        if errorbardots
+        scatter(plotfreqs,mean_2,defaultMarkerSize,'MarkerFaceColor',lineprops.col{:},'MarkerEdgeColor','none')
+    end
 else
     l2=errorbar(plotfreqs, mean_2,std_2./sqrt(N_array),...
-        'LineWidth',lineprops.linewidth, 'Color',lineprops.col{:},'CapSize',0);
+        'LineWidth',lineprops.width, 'Color',lineprops.col{:},'CapSize',0);
 end
 
 % plot c1
 lineprops.col = {color_mat{c1}};
 if shadederror
     l1=mseb(plotfreqs, mean_1,std_1./sqrt(N_array),lineprops,1);
+    if errorbardots
+        scatter(plotfreqs,mean_1,defaultMarkerSize,'MarkerFaceColor',lineprops.col{:},'MarkerEdgeColor','none')
+    end
+
 else
     l1=errorbar(plotfreqs, mean_1,std_1./sqrt(N_array),...
-        'LineWidth',lineprops.linewidth, 'Color',lineprops.col{:},'CapSize',0);
+        'LineWidth',lineprops.width, 'Color',lineprops.col{:},'CapSize',0);
 end
 
 
@@ -334,6 +341,9 @@ if nanmax(N_array)==nanmin(N_array)
     suffix = ['_N=' num2str(nanmax(N_array))];
 else
     suffix = ['_N=' num2str(nanmin(N_array)) 'to' num2str(nanmax(N_array))];
+end
+if shadederror
+    suffix = [suffix '_mseb'];
 end
 if bodeprintflag
     printHR

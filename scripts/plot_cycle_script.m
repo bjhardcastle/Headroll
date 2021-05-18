@@ -161,12 +161,12 @@ if ~isempty(flyrespcyc)
         ax = gca;
         ax.XAxis.Visible = 'off';
         ax.YAxis.Label.String = 'Roll angle (\circ)';
-        if ct > 1
+        if ct > 1 || bodeprintflag
             ax.YAxis.Visible = 'off';
         else
             trimYAxisToLims(gca)
         end
-        
+        set(gca,'color',[1 1 1 0]);
         setHRaxes(gca,2.38,1.5)
         
         if length(respcycles) > Nmax
@@ -186,8 +186,11 @@ if ~isempty(flyrespcyc)
     else
         suffix = ['C' num2str(cidx) '_N=' num2str(Nmin) 'to' num2str(Nmax)];
     end
-    
+    if cycleshadederror
+        suffix = [suffix '_mseb'];
+    end
     if bodeprintflag
+        
         printHR
     end
     

@@ -7,26 +7,15 @@ end
 clearvars
 getHRplotParams
 
-% if bodererun
-%     bode_rel_first = 0;
-%     remake_fixed_sines_cv
-%     cd(fullfile(rootpathHR))
-% else
     load('..\mat\DATA_cv_chirp');
-% end
 
 getHRplotParams
 flyname = 'cv';
 
-% condSelect = [1,2];
 condSelect = [1];
 color_mat = {};
 color_mat{condSelect(1)} = cv_col;
-% color_mat{condSelect(2)} = darkGreyCol;
-% legCell = {'no ocelli';'no halteres'};
 
-% plot_bode_script
-% plot_slipspeed_script
 plot_chirp_timeseries_script
 %% horsefly
 try
@@ -37,28 +26,17 @@ end
 clearvars
 getHRplotParams
 
-% if bodererun
-%         bode_rel_first = 0;
-% remake_fixed_sines_tb
-%     cd(fullfile(rootpathHR))
-% else
     load('..\mat\DATA_tb_chirp');
-% end
 
 getHRplotParams
 flyname = 'tb';
 
-% condSelect = [1,3];
 condSelect = [1];
 color_mat = {};
-color_mat{condSelect(1)} = tb_col;
-% color_mat{condSelect(2)} = darkGreyCol;
-% legCell = {'no ocelli';'no ocelli, dark';'no halteres';'no halteres, dark'};
+color_mat{1} = tb_col;
 
-% plot_bode_script
-% plot_slipspeed_script
 plot_chirp_timeseries_script
-%% ea
+%% e.aeneus
 try
     cd(fullfile(rootpathHR))
 catch
@@ -67,29 +45,19 @@ end
 clearvars
 getHRplotParams
 
-% if bodererun
-%         bode_rel_first = 0;
-% remake_fixed_sines_ea
-%     cd(fullfile(rootpathHR))
-% else
 load('..\mat\DATA_ea_chirp');
 % end
 
 getHRplotParams
 flyname = 'ea';
 
-% condSelect = [1,3];
 condSelect = [1];
 % 
 color_mat = {};
-color_mat{condSelect(1)} = ea_col;
-% color_mat{condSelect(2)} = darkGreyCol;
-% legCell = {'intact';'no ocelli';'no halteres'};
+color_mat{1} = ea_col;
 
-% plot_bode_script
-% plot_slipspeed_script
 plot_chirp_timeseries_script
-%% eb
+%% e.balteatus
 try
     cd(fullfile(rootpathHR))
 catch
@@ -98,13 +66,7 @@ end
 clearvars
 getHRplotParams
 
-% if bodererun
-%         bode_rel_first = 0;
-% remake_fixed_sines_ea
-%     cd(fullfile(rootpathHR))
-% else
 load('..\mat\DATA_eb_chirp');
-% end
 
 getHRplotParams
 flyname = 'eb';
@@ -112,12 +74,31 @@ flyname = 'eb';
 condSelect = [1];
 
 color_mat = {};
-color_mat{condSelect(1)} = eb_col;
-% color_mat{condSelect(2)} = darkGreyCol;
+color_mat{1} = eb_col;
 
-% plot_bode_script
-% plot_slipspeed_script
 plot_chirp_timeseries_script
+
+%% e.tenax
+try
+    cd(fullfile(rootpathHR))
+catch
+    cd('G:\My Drive\Headroll\scripts')
+end
+clearvars
+getHRplotParams
+
+load('..\mat\DATA_et_chirp');
+
+getHRplotParams
+flyname = 'et';
+
+condSelect = [1];
+
+color_mat = {};
+color_mat{1} = et_col;
+
+plot_chirp_timeseries_script
+
 %% model
 try
     cd(fullfile(rootpathHR))
@@ -142,8 +123,9 @@ condSelect = [1];
 
 color_mat = {};
 
+
 color_mat{condSelect(1)} = [0 0 0];
 
-% plot_bode_script
-% plot_slipspeed_script
+cond.flymeans = cond.mean; % for mseb, variance is zero since data is simulated
+
 plot_chirp_timeseries_script

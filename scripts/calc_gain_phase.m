@@ -126,7 +126,7 @@ resp_win = resp_used(round((step-1)*stimperiod+phaseIdx):round((step-1)*stimperi
 
 if ~exist('bode_rel_first','var') || ~bode_rel_first
     % take aligned head angle, subtract from thorax angle
-    resp_win = -( stim_win - resp_win);   
+    resp_win = ( stim_win - resp_win);   
     resp_off(step) = mean(resp_win);
     resp_win = resp_win - resp_off(step);                               % Remove offset
 else
@@ -136,7 +136,7 @@ else
     resp_off(step) = mean(resp_win);
     resp_win = resp_win - resp_off(step);                               % Remove offset
 end
- gain(step) =  abs(resp_win/stim_win);
+ gain(step) =  (resp_win/stim_win);
    
 
    

@@ -311,7 +311,7 @@ end
 figure('Units','centimeters','Position', [1 1 18 20]);
 hold on
 
-lineprops.linewidth = thickLineWidth;
+lineprops.width = thickLineWidth;
 
 % plot stim
 lineprops.col = {[0 0 0]};
@@ -322,7 +322,7 @@ else
         ls=mseb(freq(plotfreqs), mean_s(plotfreqs), std_s(plotfreqs)./sqrt(N_array(plotfreqs)),lineprops,1);
     else
         ls=errorbar(freq(plotfreqs), mean_s(plotfreqs),std_s(plotfreqs)./sqrt(N_array(plotfreqs)),...
-            'LineWidth',lineprops.linewidth, 'Color',lineprops.col{:},'CapSize',0);
+            'LineWidth',lineprops.width, 'Color',lineprops.col{:},'CapSize',0);
     end
 end
 
@@ -332,7 +332,7 @@ if shadederror
 l2=mseb(freq(plotfreqs), mean_2(plotfreqs),std_2(plotfreqs)./sqrt(N_array(plotfreqs)),lineprops,1);
 else
 l2=errorbar(freq(plotfreqs), mean_2(plotfreqs),std_2(plotfreqs)./sqrt(N_array(plotfreqs)),...
-    'LineWidth',lineprops.linewidth, 'Color',lineprops.col{:},'CapSize',0);
+    'LineWidth',lineprops.width, 'Color',lineprops.col{:},'CapSize',0);
 end
 
 % plot c1
@@ -341,7 +341,7 @@ if shadederror
     l1=mseb(freq(plotfreqs), mean_1(plotfreqs),std_1(plotfreqs)./sqrt(N_array(plotfreqs)),lineprops,1);
 else
     l1=errorbar(freq(plotfreqs), mean_1(plotfreqs),std_1(plotfreqs)./sqrt(N_array(plotfreqs)),...
-        'LineWidth',lineprops.linewidth, 'Color',lineprops.col{:},'CapSize',0);
+        'LineWidth',lineprops.width, 'Color',lineprops.col{:},'CapSize',0);
 end
 
 

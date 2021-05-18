@@ -21,13 +21,13 @@ end
 getHRplotParams
 flyname = 'cv';
 
-condSelect = [1,2];
-% condSelect = [1];
+condSelect = [1,2]; % these refer to positions in array, not original conditions: to change conditions, modify in 'remake_fixed_sines_cv' & rerun analysis 
+
 bodecolor_mat = {};
 bodecolor_mat{condSelect(1)} = cv_col;
 bodecolor_mat{condSelect(2)} = darkGreyCol;
 
-legCell = {'no ocelli';'no halteres'};
+legCell = {'intact';'no halteres'};
 
 plot_bode_script
 
@@ -54,11 +54,11 @@ getHRplotParams
 flyname = 'tb';
 
 condSelect = [1,3];
-% condSelect = [1];
+
 bodecolor_mat = {};
 bodecolor_mat{condSelect(1)} = tb_col;
 bodecolor_mat{condSelect(2)} = darkGreyCol;
-legCell = {'no ocelli';'no ocelli, dark';'no halteres';'no halteres, dark'};
+legCell = {'intact';'intact, dark';'no halteres';'no halteres, dark'};
 
 plot_bode_script
 
@@ -81,19 +81,27 @@ else
     load('..\mat\DATA_ea_gain_phase');
 end
 
-% resp_gain_mean(5,:,:,:) = NaN;
-% resp_gain_mean(7,:,:,:) = NaN;
-
 getHRplotParams
 flyname = 'ea';
 
-condSelect = [1,2];
-% condSelect = [1];
-% 
+condSelect = [1,3];
+
 bodecolor_mat = {};
 bodecolor_mat{condSelect(1)} = ea_col;
 bodecolor_mat{condSelect(2)} = darkGreyCol;
-legCell = {'no ocelli';'no halteres';'no halteres, dark'};
+
+%{
+ % % To show occluded ocelli condition too:
+condSelect = [1,2,3];
+
+bodecolor_mat = {};
+bodecolor_mat{condSelect(1)} = ea_col;
+bodecolor_mat{condSelect(2)} = [0 0 0];
+bodecolor_mat{condSelect(3)} = darkGreyCol;
+
+%}
+
+legCell = {'intact';'no ocelli';'+no halteres'};
 
 % restrict range to those available in other flies:
 stimfreqs(1) = nan;

@@ -3,7 +3,6 @@ clear all
 getHRplotParams
 % or manually: bodefilterflag = 0;
 
-
 flies = [2,3,4,5,6,7,8,9];    % numbers of flies to be included in study (remove fly8, no publishable data)
 
 % flies =[2,6]
@@ -11,6 +10,7 @@ flies = [2,3,4,5,6,7,8,9];    % numbers of flies to be included in study (remove
 stimfreqs = [0.1,1,3.003,6.006,10.01,15,20,25];
 freqs = roundn(stimfreqs,-1);
 
+addpath(cd)
 cd('..\Thesis_data\Horseflies\Horseflies_2015\analysis\');
 project_path = '..\bkup_mats\';
 % project_path = 'Z:\Ben\Horseflies_2015\bkup_mats\';

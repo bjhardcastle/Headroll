@@ -109,6 +109,37 @@ end
 refstim = x;
 
 save(fullfile(rootpathHR,'..\mat\DATA_eb_chirp.mat'),'cond','refstim')
+%% Et
+remake_chirp_et
+clearvars
+getHRplotParams
+load('..\Thesis_data\Hoverflies\Eristalis Sines\Hoverflies_2015\eristalis_chirp_example.mat')
+
+
+flies = [1];
+stimfreqs = 51;
+framerates = 800;
+
+cond = struct;
+flymean = [];
+for cidx = 1
+    for fidx = 1
+        flymean(fidx,:) = resp(:,3);
+    end
+    cond(cidx).mean = nanmean(flymean,1);
+    cond(cidx).flymeans = flymean;
+    cond(cidx).framerates = framerates;
+    cond(cidx).flies = flies;
+    cond(cidx).stimfreqs = stimfreqs;
+end
+
+load(['..\Thesis_data\Hoverflies\Aenus_sine_chirp\reference_stim\chirp_' num2str(framerates) '.mat'])
+if size(x,1)>size(x,2)
+    x = x';
+end
+refstim = x;
+
+save(fullfile(rootpathHR,'..\mat\DATA_et_chirp.mat'),'cond','refstim')
 
 %% Cv
 clearvars

@@ -3,10 +3,12 @@ clear all
 getHRplotParams
 % or manually: bodefilterflag = 0;
 
+
 flies = [2,3,4,5,6,7,8]; % flies 9 & 10 weren't flying well; Problem with fly1 at 1Hz pr
 stimfreqs = [0.03,0.06,0.1,0.3,0.6,1,3.003,6.00,10.0,15,20,25];
 freqs = roundn(stimfreqs,-2);
 
+addpath(cd)
 cd('..\Thesis_data\Hoverflies\Aenus_sine_chirp\');
 project_path = '.\data\';
 fly_path = 'hoverfly';

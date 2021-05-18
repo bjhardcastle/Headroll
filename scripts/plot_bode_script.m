@@ -28,7 +28,6 @@ else
 end
 
 lineprops.width = thickLineWidth;
-lineprops.linewidth = thickLineWidth;
 figure
 
 % N_array = sum(~isnan(resp_gain_mean(:,:,1,1)));
@@ -57,6 +56,9 @@ for c = 1:length(condSelect)
     
     if bodeshadederror
         h1{cidx} = mseb(freqs,CLgm,CLgs,lineprops,1);
+        if errorbardots
+            scatter(freqs,CLgm,defaultMarkerSize,'MarkerFaceColor',lineprops.col{:},'MarkerEdgeColor','none')
+        end
     else
         h1{cidx} = errorbar(freqs,CLgm,CLgs, ...
             'LineWidth',lineprops.width, 'Color',lineprops.col{:},'CapSize',0);
@@ -124,23 +126,30 @@ if nanmax(N_array)==nanmin(N_array)
 else
     suffix = ['_N=' num2str(nanmin(N_array)) 'to' num2str(nanmax(N_array))];
 end
-
+if bodeshadederror
+        suffix = [suffix '_mseb'];
+            end
 
 if ~bodesubplots
     
     gainplotaxpos = gainplot.Position;
     gainplot.XLabel.String = '';
     gainplot.XTickLabel = {};
-    setHRaxes(gainplot,[],5)
+    setHRaxes(gainplot,4.5,5)
     set(gcf,'Units','centimeters')
     set(gcf,'PaperUnits','centimeters')
     set(gcf,'Position',[0 0 7 5])
     set(gcf,'PaperPosition',[0 0 7 5])
     set(gcf,'PaperSize',[7 5])
+         curraxpos = get(gca,'Position');
+
+    set(gca,'Position',[curraxpos(1)-0.5 curraxpos(2)-0.25 curraxpos(3) curraxpos(4)])
+        set(gca,'color',[1 1 1 0]);
 
     if bodeprintflag
         savename = [plotnames.(plotname) '_' flyname '_gain'];
-        if bode_rel_first
+            
+            if bode_rel_first
             savename = [savename '_rel_first'];
         end
         printHR
@@ -178,6 +187,9 @@ CLpm = circ_mean(CLp*pi/180,[],1)*180/pi;
     
     if bodeshadederror
         h2{cidx} = mseb(freqs,CLpm,CLps,lineprops,1);
+         if errorbardots
+            scatter(freqs,CLpm,defaultMarkerSize,'MarkerFaceColor',lineprops.col{:},'MarkerEdgeColor','none')
+        end
     else
         h2{cidx} = errorbar(freqs,CLpm,CLps, ...
             'LineWidth',lineprops.width, 'Color',lineprops.col{:},'CapSize',0);
@@ -266,12 +278,17 @@ if bodesubplots
     
 else
     delete(l)
-    setHRaxes(phaseplot,[],5)
+    setHRaxes(phaseplot,4.5,5)
     set(gcf,'Units','centimeters')
     set(gcf,'PaperUnits','centimeters')
     set(gcf,'Position',[0 0 7 5])
     set(gcf,'PaperPosition',[0 0 7 5])
     set(gcf,'PaperSize',[7 5 ])
+
+         curraxpos = get(gca,'Position');
+
+    set(gca,'Position',[curraxpos(1)-0.5 curraxpos(2)-0.25 curraxpos(3) curraxpos(4)])
+        set(gca,'color',[1 1 1 0]);
 
 
 end

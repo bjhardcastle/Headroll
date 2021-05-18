@@ -3,12 +3,13 @@ clear all
 getHRplotParams
 % or manually: bodefilterflag = 0;
 
+addpath(cd)
 cd('..\Thesis_data\Blowflies\Sines\Fran2016\Fly Gaze Data\flystab_better_filtering')
 
 fly_array = [9, 10, 12, 14, 17];     % numbers of flies to be included in study (remove fly8, no publishable data)
 f2ly_array = [1:9];
 
-cond_array(1,:) = [2,3];                     % numbers of conditions to be included
+cond_array(1,:) = [1,3];                     % numbers of conditions to be included
 cond_array(2,:) = [1,3];
 % array2: karin2016:
 % c1: intact, lights on

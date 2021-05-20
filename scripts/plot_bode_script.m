@@ -1,5 +1,11 @@
 plotname = 'bode';
 
+if ~exist('..\mat\bodestats.mat','file')
+    bodestats = struct();
+    save('..\mat\bodestats.mat','bodestats');
+else
+    load('..\mat\bodestats.mat','bodestats');
+end
 
 freqs = roundn(stimfreqs,-2);
 gainplot_pos = [0.15 0.55 0.8 0.38];
@@ -44,6 +50,12 @@ for c = 1:length(condSelect)
         gainVec(length(condSelect)-c+1,:) = CLgm;
     CLgs = nanstd(CLg,1)./sqrt(N_array);
     
+    % store stats
+    bodestats.(flyname).gainvals{c} = CLg;
+    bodestats.(flyname).gainmean(c,:) = CLgm;
+    bodestats.(flyname).gainN(c,:) = N_array;
+    bodestats.(flyname).freqs(c,:) = freqs;
+
     if bodesubplots
         gainplot=subplot('Position',gainplot_pos);
     else
@@ -176,6 +188,12 @@ CLpm = circ_mean(CLp*pi/180,[],1)*180/pi;
     end
     phaseVec(length(condSelect)-c+1,:) = CLpm;
     CLps = (circ_std(CLp*pi/180,[],[],1)*180/pi)./sqrt(N_array);
+    
+    % store stats
+    bodestats.(flyname).phasevals{c} = CLp;
+    bodestats.(flyname).phasemean(c,:) = CLpm;
+    bodestats.(flyname).phaseN(c,:) = N_array;
+
     if bodesubplots
         phaseplot=subplot('Position',phaseplot_pos);
     else
@@ -292,6 +310,9 @@ else
 
 
 end
+
+save('..\mat\bodestats.mat','bodestats');
+
 if bodeprintflag
     savename = [plotnames.(plotname) '_' flyname '_phase'];
     if bode_rel_first

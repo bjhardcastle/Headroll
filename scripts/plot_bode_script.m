@@ -1,10 +1,9 @@
 plotname = 'bode';
 
-if ~exist('..\mat\bodestats.mat','file')
-    bodestats = struct();
-    save('..\mat\bodestats.mat','bodestats');
-else
+if exist('..\mat\bodestats.mat','file')
     load('..\mat\bodestats.mat','bodestats');
+else
+    bodestats =  struct;
 end
 
 freqs = roundn(stimfreqs,-2);
@@ -51,10 +50,11 @@ for c = 1:length(condSelect)
     CLgs = nanstd(CLg,1)./sqrt(N_array);
     
     % store stats
-    bodestats.(flyname).gainvals{c} = CLg;
-    bodestats.(flyname).gainmean(c,:) = CLgm;
-    bodestats.(flyname).gainN(c,:) = N_array;
-    bodestats.(flyname).freqs(c,:) = freqs;
+    c_switch = mod(c+2,2)+1; % conditions are plot in reverse order: store them in the correct order (c1 in row 1, etc)
+    bodestats.(flyname).gainvals{c_switch} = CLg;
+    bodestats.(flyname).gainmean(c_switch,:) = CLgm;
+    bodestats.(flyname).gainN(c_switch,:) = N_array;
+    bodestats.(flyname).freqs(c_switch,:) = freqs;
 
     if bodesubplots
         gainplot=subplot('Position',gainplot_pos);
@@ -190,9 +190,10 @@ CLpm = circ_mean(CLp*pi/180,[],1)*180/pi;
     CLps = (circ_std(CLp*pi/180,[],[],1)*180/pi)./sqrt(N_array);
     
     % store stats
-    bodestats.(flyname).phasevals{c} = CLp;
-    bodestats.(flyname).phasemean(c,:) = CLpm;
-    bodestats.(flyname).phaseN(c,:) = N_array;
+    c_switch = mod(c+2,2)+1; % conditions are plot in reverse order: store them in the correct order (c1 in row 1, etc)
+    bodestats.(flyname).phasevals{c_switch} = CLp;
+    bodestats.(flyname).phasemean(c_switch,:) = CLpm;
+    bodestats.(flyname).phaseN(c_switch,:) = N_array;
 
     if bodesubplots
         phaseplot=subplot('Position',phaseplot_pos);

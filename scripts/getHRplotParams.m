@@ -160,7 +160,7 @@ bodeReconstructSlipspeeds = 0; % sanity check
 modelrerun = 0;
 
 %% All plots
-bodeprintflag = 1;
+bodeprintflag = 0;
 errorbardots = 1;
 bodererun = 0; % re-run analysis and save data
 

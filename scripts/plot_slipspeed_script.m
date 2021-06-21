@@ -213,9 +213,10 @@ end
 
 if modeplot
     plotname =  'slipspeedMode';
+    manualstim = 1;
 else
     plotname =  'slipspeedMedian';
-    manualstim = 0;
+    manualstim = 1;
 end
 savename = [plotnames.(plotname) '_' flyname ];
 
@@ -262,18 +263,18 @@ lineprops.width = thickLineWidth;
 
 % plot stim
 lineprops.col = {[0 0 0]};
-if manualstim
+% if manualstim
     ls=plot([0 plotfreqs], [0 mean_s],'LineWidth',defaultLineWidth, 'Color',lineprops.col{:});
     ls.LineStyle = ':';
     ls.Color = 'k';
-else
-    if shadederror
-        ls=mseb([0 plotfreqs], [0 mean_s], [0 std_s]./sqrt(N_array),lineprops,1);
-    else
-        ls=errorbar([0 plotfreqs], [0 mean_s], [0 std_s]./sqrt(N_array),...
-            'LineWidth',lineprops.width, 'Color',lineprops.col{:},'CapSize',0);
-    end
-end
+% else
+%     if shadederror
+%         ls=mseb([0 plotfreqs], [0 mean_s], [0 std_s]./sqrt(N_array),lineprops,1);
+%     else
+%         ls=errorbar([0 plotfreqs], [0 mean_s], [0 std_s]./sqrt(N_array),...
+%             'LineWidth',lineprops.width, 'Color',lineprops.col{:},'CapSize',0);
+%     end
+% end
 
 % plot c2
 lineprops.col = {color_mat{c2}};

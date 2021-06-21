@@ -50,7 +50,7 @@ for c = 1:length(condSelect)
     CLgs = nanstd(CLg,1)./sqrt(N_array);
     
     % store stats
-    c_switch = mod(c+2,2)+1; % conditions are plot in reverse order: store them in the correct order (c1 in row 1, etc)
+    c_switch = length(condSelect)-c+1; % conditions are plot in reverse order: store them in the correct order (c1 in row 1, etc)
     bodestats.(flyname).gainvals{c_switch} = CLg;
     bodestats.(flyname).gainmean(c_switch,:) = CLgm;
     bodestats.(flyname).gainN(c_switch,:) = N_array;
@@ -181,6 +181,7 @@ for c = 1:length(condSelect)
     
     CLp=squeeze(resp_phase_mean(:,:,:,cidx));
 CLpm = circ_mean(CLp*pi/180,[],1)*180/pi;
+N_array = sum(~isnan(CLp));
     if ~bode_rel_first
 %     CLpm(CLpm > 70) = -360+CLpm(CLpm>70);
     else
@@ -190,7 +191,7 @@ CLpm = circ_mean(CLp*pi/180,[],1)*180/pi;
     CLps = (circ_std(CLp*pi/180,[],[],1)*180/pi)./sqrt(N_array);
     
     % store stats
-    c_switch = mod(c+2,2)+1; % conditions are plot in reverse order: store them in the correct order (c1 in row 1, etc)
+    c_switch = length(condSelect)-c+1; % conditions are plot in reverse order: store them in the correct order (c1 in row 1, etc)
     bodestats.(flyname).phasevals{c_switch} = CLp;
     bodestats.(flyname).phasemean(c_switch,:) = CLpm;
     bodestats.(flyname).phaseN(c_switch,:) = N_array;

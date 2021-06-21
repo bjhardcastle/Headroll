@@ -1,33 +1,39 @@
+% Passive head-neck model, based on Sabatier et al., 2014,
+% which used the following for physical parameters:
+% k = 1e-7;
+% c = 1e-8;
+% J = 0.3e-10; % inertia of head, from (Schilstra & van Hateren 1999)
+% m = blowfly head mass: 8mg from (Schilstra & van Hateren 1999)
+% m = 8e-6; %kg,
+
 getHRplotParams
 
 % Physical parameters
 % m = blowfly head mass: 8mg from (Schilstra & van Hateren 1999)
-m = 8e-6; %kg,
+m = 10e-6; %kg
 
 % L = distance between neck axis and centre of mass, approx 0.25mm
 L = 0.00025; %m
 
-% R = radius of head, approx 2mm
-R = 0.002;
+% r = radius of head, approx 2mm
+r = 0.002; %m
 
-J = 2/3*(m*R^2); % for thin-walled spherical shell
-J = 3.5e-10; % Sabattier et al., 2014, from (Schilstra & van Hateren 1999)
+% J = rotational inertia 
+J = 2/3*(m*r^2); % for thin-walled spherical shell
 
-k = 1e-7;
-c = 1e-8;
-% k = 1e-7; % Sabattier et al., 2014, 
-% c = 1e-8; % Sabattier et al., 2014, 
+% k = torsional spring constant 
+k = 1e-8; %Nm/deg, order of magnitude smaller than Sabatier et al.
 
-% Stabilization effort:
+% c = torsional damping constant 
+c = 1e-9; %Nmsec/deg, order of magnitude smaller than Sabatier et al.
+
+% Stabilization effort :
 head_lag = 0.005; % Constant delay of 5ms (motor system)
-stab_gain = 0.000000001;
+stab_gain = 0; % no stabilization effort in passive model
 
 % Stimulus parameters
 amp = 30; % +/- stimulus roll angle
 % fps = 800; % for fixed sines only: currently loading reference chirp stim
-% t_step = 1/fps;
-% t_max = 10; % trial time, seconds
-% t_length = 2*t_max/t_step;
 
 for chirp_stim = [1,0]
     headroll = struct;
@@ -46,15 +52,15 @@ for chirp_stim = [1,0]
         
         
         if ~chirp_stim    % Sine stimulus trace
-           fps = stimrates(fIdx);
+            fps = stimrates(fIdx);
             t_max = 20/stim_freq; % at least 20 cycles
             if t_max < 10
                 t_max = 10;
             end
             stimtime = t_max;
             t_step = 1/fps;
-
-    t_length = 2*t_max*fps;
+            
+            t_length = 2*t_max*fps;
             sYt = linspace(-t_max,t_max,t_length);
             sY = amp*sin(stim_freq*2*pi*sYt);
             stims(1).cond(1).freq(fIdx).trial = sY'; % for saving to disk in same format as experiments..
@@ -64,12 +70,12 @@ for chirp_stim = [1,0]
             sV = diff(sY)/t_step;
             sVt = linspace(-t_max,t_max,length(sV));
             stimtime = t_max;
-                 
+            
             % Get active stabilization effort (near zero while looking at passive
-        % response)
-        rY = circshift(stab_gain*sY,ceil(head_lag*fps),2); % Relative movement of head, approx half of stim, opp direction
-        rYt = linspace(-t_max,t_max,length(rY));
-        
+            % response)
+            rY = circshift(stab_gain*sY,ceil(head_lag*fps),2); % Relative movement of head, approx half of stim, opp direction
+            rYt = linspace(-t_max,t_max,length(rY));
+            
         elseif chirp_stim % Chirp stimulus trace
             %%
             fps = 800;
@@ -106,7 +112,7 @@ for chirp_stim = [1,0]
             
             % 1 second of zero padding from t=-1:0 (so that velocity at t=0 can be
             % calculated)
-            sY1 = Stim_sin;            
+            sY1 = Stim_sin;
             %sY1 = downsample(Stim_sin,4*length(Stim_sin)/fps);
             sY = [zeros(1,fps) sY1 zeros(1,fps)];
             sYt = linspace(-1,stimtime+1,length(sY));
@@ -114,13 +120,13 @@ for chirp_stim = [1,0]
             % Get stimulus velocity
             sV = diff(sY)/t_step;
             sVt = linspace(-1,stimtime+1,length(sV));
-               
+            
             % Get active stabilization effort (near zero while looking at passive
-        % response)
-        rY = circshift(stab_gain*sY,ceil(head_lag*fps),2); % Relative movement of head, approx half of stim, opp direction
-        rYt = linspace(-1,stimtime,length(rY));
-        
-end
+            % response)
+            rY = circshift(stab_gain*sY,ceil(head_lag*fps),2); % Relative movement of head, approx half of stim, opp direction
+            rYt = linspace(-1,stimtime,length(rY));
+            
+        end
         
         % Solve model equations
         tspan = sYt;%[0 t_max];
@@ -129,7 +135,7 @@ end
         [t,y] = ode45(@(t,y) model_head(t,y,J,k,c,sY,sYt,sV,sVt,rY,rYt), tspan, y0);
         
         
-        %{
+%         %{
         figure
         hold off
         plot(sYt,sY,'Color',[0.6,0.6,0.6],'LineWidth',1 )

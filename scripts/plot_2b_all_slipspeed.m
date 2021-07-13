@@ -1,5 +1,6 @@
 %% blowfly
 try
+	getHRplotParams
     cd(fullfile(rootpathHR))
 catch
     cd('G:\My Drive\Headroll\scripts')
@@ -31,6 +32,7 @@ plot_slipspeed_script
 
 %% horsefly
 try
+	getHRplotParams
     cd(fullfile(rootpathHR))
 catch
     cd('G:\My Drive\Headroll\scripts')
@@ -60,6 +62,7 @@ plot_slipspeed_script
 
 %% hoverfly
 try
+	getHRplotParams
     cd(fullfile(rootpathHR))
 catch
     cd('G:\My Drive\Headroll\scripts')
@@ -90,6 +93,7 @@ plot_slipspeed_script
 
 %% model
 try
+	getHRplotParams
     cd(fullfile(rootpathHR))
 catch
     cd('G:\My Drive\Headroll\scripts')

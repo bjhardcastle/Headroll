@@ -1,5 +1,6 @@
 %% blowfly
 try
+	getHRplotParams
     cd(fullfile(rootpathHR))
 catch
     cd('G:\My Drive\Headroll\scripts')
@@ -19,6 +20,7 @@ color_mat{condSelect(1)} = cv_col;
 plot_chirp_timeseries_script
 %% horsefly
 try
+	getHRplotParams
     cd(fullfile(rootpathHR))
 catch
     cd('G:\My Drive\Headroll\scripts')
@@ -38,6 +40,7 @@ color_mat{1} = tb_col;
 plot_chirp_timeseries_script
 %% e.aeneus
 try
+	getHRplotParams
     cd(fullfile(rootpathHR))
 catch
     cd('G:\My Drive\Headroll\scripts')
@@ -59,6 +62,7 @@ color_mat{1} = ea_col;
 plot_chirp_timeseries_script
 %% e.balteatus
 try
+	getHRplotParams
     cd(fullfile(rootpathHR))
 catch
     cd('G:\My Drive\Headroll\scripts')
@@ -80,6 +84,7 @@ plot_chirp_timeseries_script
 
 %% e.tenax
 try
+	getHRplotParams
     cd(fullfile(rootpathHR))
 catch
     cd('G:\My Drive\Headroll\scripts')
@@ -101,6 +106,7 @@ plot_chirp_timeseries_script
 
 %% model
 try
+	getHRplotParams
     cd(fullfile(rootpathHR))
 catch
     cd('G:\My Drive\Headroll\scripts')

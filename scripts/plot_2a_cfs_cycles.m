@@ -1,5 +1,6 @@
 %% blowfly
 try
+	getHRplotParams
     cd(fullfile(rootpathHR))
 catch
     cd('G:\My Drive\Headroll\scripts')
@@ -28,6 +29,7 @@ plot_cycle_script
 
 %% horsefly
 try
+	getHRplotParams
     cd(fullfile(rootpathHR))
 catch
     cd('G:\My Drive\Headroll\scripts')
@@ -56,6 +58,7 @@ plot_cycle_script
 
 %% hoverfly
 try
+	getHRplotParams
     cd(fullfile(rootpathHR))
 catch
     cd('G:\My Drive\Headroll\scripts')
@@ -91,6 +94,7 @@ plot_cycle_script
 %% model - need to save 'respcycles','relrespcycles' and 'stimcycles' in 'remake_model_head'
 %{
 try
+	getHRplotParams
     cd(fullfile(rootpathHR))
 catch
     cd('G:\My Drive\Headroll\scripts')

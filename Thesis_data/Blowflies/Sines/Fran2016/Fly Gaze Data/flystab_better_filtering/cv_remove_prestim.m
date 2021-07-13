@@ -216,13 +216,13 @@ end
             if min(aligned_stim(:,4)) == 0
                 aligned_stim(:,3) = ref_stim;
             end
-%             amp =  round((max(aligned_stim(2:end-1,3)) - min(aligned_stim(2:end-1,3))) /2);
-%             if amp > 30
-%                 for arIdx = 1:3
-%                     aligned_resp(:,arIdx) = aligned_resp(:,arIdx).*30./amp;
-%                     aligned_stim(:,arIdx) = aligned_stim(:,arIdx).*30./amp;
-%                 end
-%             end
+            amp =  round((max(aligned_stim(2:end-1,3)) - min(aligned_stim(2:end-1,3))) /2);
+            if amp > 30
+                for arIdx = 1:3
+                    aligned_resp(:,arIdx) = aligned_resp(:,arIdx).*30./amp;
+                    aligned_stim(:,arIdx) = aligned_stim(:,arIdx).*30./amp;
+                end
+            end
 
 if plot_flag == 1
     %   Plots

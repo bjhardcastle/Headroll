@@ -128,6 +128,7 @@ else
 end
 
 try
+	getHRplotParams
     cd(fullfile(rootpathHR))
 catch
     cd('G:\My Drive\Headroll\scripts')

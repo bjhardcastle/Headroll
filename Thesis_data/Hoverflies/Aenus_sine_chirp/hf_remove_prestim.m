@@ -2,7 +2,8 @@ function [ref_stim,aligned_resp,aligned_stim,fps] = remove_prestim(stim, resp, s
 %   Remove the section of sequence before the stim starts by aligning with a reference stim trace with known delay.
 %   We trim all columns of stim & resp, not just rollangle(:,3)
 %   Original data are left intact.
-folder_path ='G:\My Drive\Headroll\Thesis_data\Hoverflies\Aenus_sine_chirp\';
+thisfilepath = mfilename('fullpath'); 
+folder_path = fullfile(fileparts(thisfilepath));%folder_path ='G:\My Drive\Headroll\Thesis_data\Hoverflies\Aenus_sine_chirp\';
 
 %   Check resp and stim are the same length, if not there was a problem
 %   with the video 

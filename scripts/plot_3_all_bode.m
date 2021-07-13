@@ -1,6 +1,7 @@
 %% blowfly
 
 try
+	getHRplotParams
     cd(fullfile(rootpathHR))
 catch
     cd('G:\My Drive\Headroll\scripts')
@@ -33,7 +34,8 @@ plot_bode_script
 
 %% horsefly
 try
-    cd(fullfile(rootpathHR))
+    getHRplotParams
+	cd(fullfile(rootpathHR))
 catch
     cd('G:\My Drive\Headroll\scripts')
 end
@@ -64,7 +66,8 @@ plot_bode_script
 
 %% hoverfly
 try
-    cd(fullfile(rootpathHR))
+    getHRplotParams
+	cd(fullfile(rootpathHR))
 catch
     cd('G:\My Drive\Headroll\scripts')
 end

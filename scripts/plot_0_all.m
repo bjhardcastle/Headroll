@@ -1,4 +1,3 @@
-addpath(cd)
 plot_1b_chirp_timeseries
 plot_2a_cfs_cycles
 plot_2b_all_slipspeed

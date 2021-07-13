@@ -80,6 +80,7 @@ end
 refstim = x;
 
 save(fullfile(rootpathHR,'..\mat\DATA_ea_chirp.mat'),'cond','refstim')
+
 %% Eb
 clearvars
 getHRplotParams
@@ -109,6 +110,7 @@ end
 refstim = x;
 
 save(fullfile(rootpathHR,'..\mat\DATA_eb_chirp.mat'),'cond','refstim')
+
 %% Et
 remake_chirp_et
 clearvars
@@ -145,7 +147,6 @@ save(fullfile(rootpathHR,'..\mat\DATA_et_chirp.mat'),'cond','refstim')
 clearvars
 getHRplotParams
 load('..\Thesis_data\Blowflies\Chirps\Karin2015 analysis\wind.mat');
-%     load('..\Thesis_data\Blowflies\Chirps\Karin2015 analysis\no_wind.mat');
 
 framerates = 800;
 flies = [9,10,11,12,13,14,15,16];

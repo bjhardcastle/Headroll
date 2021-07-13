@@ -1,3 +1,4 @@
+% don't call this script directly: run from 'plot_1_chirp_timeseries'
 plotname = 'chirpTimeseries';
 savename = [plotnames.(plotname) '_' flyname ];
 
@@ -45,6 +46,6 @@ if chirperrorbar
     suffix = [suffix '_mseb'];
 end
 
-if bodeprintflag
+if HRprintflag
 printHR
 end

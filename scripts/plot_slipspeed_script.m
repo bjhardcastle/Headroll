@@ -1,5 +1,4 @@
-% don't call directly this script directly: run from 'plot_2b_splipspeed'
-
+% don't call this script directly: run from 'plot_2b_splipspeed'
 plotname = 'slipspeedPDF';
 savename = [plotnames.(plotname) '_' flyname ];
 
@@ -205,7 +204,7 @@ if Nmin == Nmax
 else
     suffix = ['N=' num2str(Nmin) 'to' num2str(Nmax)];
 end
-if bodeprintflag
+if HRprintflag
     printHR
 end
 
@@ -346,7 +345,7 @@ end
 if shadederror
     suffix = [suffix '_mseb'];
 end
-if bodeprintflag
+if HRprintflag
     printHR
 end
 

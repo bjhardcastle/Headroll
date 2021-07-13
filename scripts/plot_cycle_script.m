@@ -104,7 +104,7 @@ if ~isempty(flyrespcyc)
         subplot(1,length(sfIdx),ct)
         hold on
         
-        if cycindiviualflydata
+        if cycindividualflydata
             indivData = flymeancyc;
             meanData = flycycMean;
             varData = flycycStd;
@@ -135,7 +135,7 @@ if ~isempty(flyrespcyc)
             
             plot(stimcycleideal,'Color',midGreyCol,'LineWidth',defaultLineWidth)
             
-            if cycindiviualflydata
+            if cycindividualflydata
                 plot(meanData,'Color',[color_mat{cidx}],'LineWidth',defaultLineWidth)
                 plot(indivData,'Color',[color_mat{cidx} 0.3],'LineWidth',0.3*defaultLineWidth)
 
@@ -161,7 +161,7 @@ if ~isempty(flyrespcyc)
         ax = gca;
         ax.XAxis.Visible = 'off';
         ax.YAxis.Label.String = 'Roll angle (\circ)';
-        if ct > 1 || bodeprintflag
+        if ct > 1 || HRprintflag
             ax.YAxis.Visible = 'off';
         else
             trimYAxisToLims(gca)
@@ -189,7 +189,7 @@ if ~isempty(flyrespcyc)
     if cycleshadederror
         suffix = [suffix '_mseb'];
     end
-    if bodeprintflag
+    if HRprintflag
         
         printHR
     end

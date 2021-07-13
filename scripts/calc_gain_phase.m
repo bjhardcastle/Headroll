@@ -1,15 +1,11 @@
-
-
 corr = [];
 phase = [];
 gain = [];
 
-% save_command_G = strcat('G_fly',int2str(flyidx),'.cond',int2str(cidx),'.freq',int2str(freqs(freqidx)),'=step_vector_G;');
-
-stimperiod = (Fs/stimfreq);                                            % Stimulus Period in samples
+stimperiod = (Fs/stimfreq);                                                % Stimulus Period in samples
 
 L = round(Fs/stimfreq);
-num_steps = floor(length(stim)/L)-1;                               % number of cycles which can be individually analyzed
+num_steps = floor(length(stim)/L)-1;                                       % number of cycles which can be individually analyzed
 
 if length(stim) == stimperiod
     num_steps = 1;
@@ -21,16 +17,15 @@ resp_off = zeros(num_steps-1,1);
 rel_resp_off = zeros(num_steps-1,1);
 gain = zeros(num_steps-1,1);
 
-% if  round(freq) == 3, figure, end
 for step = 1:num_steps
     
     
     
     stim_win = stim(round((step-1)*stimperiod+1):round((step-1)*stimperiod+L));         % One cycle of stimulus
     stim_off(step) = mean(stim_win);
-    stim_win = stim_win - stim_off(step);                                   % Remove offset
+    stim_win = stim_win - stim_off(step);                                  % Remove offset
     
-    corr_est = [];                                                          % crosscorrelation vector
+    corr_est = [];                                                         % crosscorrelation vector
     
     for k = 0:L-1
         
@@ -39,12 +34,12 @@ for step = 1:num_steps
         
         resp_win = resp(round((step-1)*stimperiod+k+1):round((step-1)*stimperiod+L+k)); % One cycle of stimulus, shifted by k samples w.r.t stim_win
         resp_off(step) = mean(resp_win);
-        resp_win = resp_win - resp_off(step);                               % Remove offset
-       
+        resp_win = resp_win - resp_off(step);                              % Remove offset
+        
         rel_resp_win = rel_resp(round((step-1)*stimperiod+k+1):round((step-1)*stimperiod+L+k)); % One cycle of stimulus, shifted by k samples w.r.t stim_win
         rel_resp_off(step) = mean(rel_resp_win);
-        rel_resp_win = rel_resp_win - rel_resp_off(step);                               % Remove offset
-       
+        rel_resp_win = rel_resp_win - rel_resp_off(step);                  % Remove offset
+        
         % store stim and resp cycles
         if step == 1
             trial_cycles = struct('resp',[],'rel_resp',[],'stim',[]);
@@ -60,90 +55,51 @@ for step = 1:num_steps
         if ~exist('bode_rel_first','var') || ~bode_rel_first
             resp_win = -(stim_win-resp_win);
             resp_off(step) = mean(resp_win);
-            resp_win = resp_win - resp_off(step);                               % Remove offset
+            resp_win = resp_win - resp_off(step);                          % Remove offset
         else
             resp_off(step) = mean(resp_win);
-            resp_win = resp_win - resp_off(step);                               % Remove offset
+            resp_win = resp_win - resp_off(step);                          % Remove offset
         end
-        corr_est(k+1) = stim_win*resp_win';                                     % Calculate inner product, that is, xcorr at phase k.
- 
-
+        corr_est(k+1) = stim_win*resp_win';                                % Calculate inner product, that is, xcorr at phase k.
         
-%          if k == 0 && round(freq) == 3 
-%            
-%             subplot(1,2,1)
-%             hold on
-%             plot(stim_win)
-%             title([ num2str(stimfreq) ', ' num2str(Fs)])
-% 
-%             subplot(1,2,2)
-%             hold on
-%             plot(resp_win)
-%         end
+        
     end
     
-    [corr(step), phaseIdx] = nanmax(corr_est);                              % Find max of xcorr.
+    [corr(step), phaseIdx] = nanmax(corr_est);                             % Find max of xcorr.
     
-            if ~exist('bode_rel_first','var') || ~bode_rel_first
-
-    phase(step) = -( phaseIdx-1 ) / stimperiod * 2 * pi;                 % Estimate response shift in radians.
-    
-            else
-           phase(step) = ( phaseIdx-1 ) / stimperiod * 2 * pi;                 % Estimate response shift in radians.
-         
-            end
-            %      if phaseIdx == 1
-    %         phase(step) = NaN;
-    %     end
-%     if phase(step) < -4.7                                                   % Unwrap phase (yes, this is bad practice)
-%         phase(step) = phase(step)+(2*pi);
-%     end
-    
-%{
-    % % take 'raw' head angle, subtract from thorax angle
-     resp_win = -( stim_win - resp_used(round((step-1)*stimperiod+1):round((step-1)*stimperiod+L)) );         % One cycle of stimulus
-    
-    % take aligned head angle, subtract from thorax angle
-    resp_win = -( stim_win - resp_used(round((step-1)*stimperiod+phaseIdx):round((step-1)*stimperiod+L+phaseIdx-1)));     % Reconstruct shifted response at max. xcorr.
+    if ~exist('bode_rel_first','var') || ~bode_rel_first
         
-      % % raw signal:
-    % resp_rel = stim_win - (resp_win);
-    % % or subtract off mean:
-    % resp_rel = stim_win - (resp_win-mean(resp_win));
+        phase(step) = -( phaseIdx-1 ) / stimperiod * 2 * pi;               % Estimate response shift in radians.
         
-    % % ratio of body/head roll:
+    else
+        phase(step) = ( phaseIdx-1 ) / stimperiod * 2 * pi;                % Estimate response shift in radians.
+        
+    end
+    
+    
+    % Reconstruct shifted response at max. xcorr.
+    resp_win = resp_used(round((step-1)*stimperiod+phaseIdx):round((step-1)*stimperiod+L+phaseIdx-1));
+    
+    if ~exist('bode_rel_first','var') || ~bode_rel_first
+        % take aligned head angle, subtract from thorax angle
+        resp_win = ( stim_win - resp_win);
+        resp_off(step) = mean(resp_win);
+        resp_win = resp_win - resp_off(step);                              % Remove offset
+    else
+        % just take aligned head angle (resp is already relative to thorax
+        % angle)
+        resp_win = resp_win;
+        resp_off(step) = mean(resp_win);
+        resp_win = resp_win - resp_off(step);                              % Remove offset
+    end
     gain(step) =  (resp_win/stim_win);
-         gain(step) = (stim_win - resp_win)/stim_win;
-         
-    % % or relative headroll (neck actuation):
-    gain(step) =  abs(resp_win/stim_win);
-    gain(step) = (stim_win - resp_used(round((step-1)*stimperiod+phaseIdx):round((step-1)*stimperiod+L+phaseIdx-1)))/stim_win;
-
-   %}
-
-% Reconstruct shifted response at max. xcorr. 
-resp_win = resp_used(round((step-1)*stimperiod+phaseIdx):round((step-1)*stimperiod+L+phaseIdx-1));
-
-if ~exist('bode_rel_first','var') || ~bode_rel_first
-    % take aligned head angle, subtract from thorax angle
-    resp_win = ( stim_win - resp_win);   
-    resp_off(step) = mean(resp_win);
-    resp_win = resp_win - resp_off(step);                               % Remove offset
-else
-    % just take aligned head angle (resp is already relative to thorax
-    % angle)
-    resp_win = resp_win;
-    resp_off(step) = mean(resp_win);
-    resp_win = resp_win - resp_off(step);                               % Remove offset
-end
- gain(step) =  (resp_win/stim_win);
-   
-
-   
-
-    G = gain(step)*exp(1i*phase(step));                                     % Calculate phasor for this cycle.
     
-    step_vector_G(step) = G;                                              % Add cycle to step_vector.
+    
+    
+    
+    G = gain(step)*exp(1i*phase(step));                                    % Calculate phasor for this cycle.
+    
+    step_vector_G(step) = G;                                               % Add cycle to step_vector.
     
 end
 

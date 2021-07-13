@@ -8,7 +8,7 @@ end
 clearvars
 getHRplotParams
 
-if bodererun
+if HRrerun
     remake_fixed_sines_cv
     cd(fullfile(rootpathHR))
 else
@@ -37,7 +37,7 @@ end
 clearvars
 getHRplotParams
 
-if bodererun
+if HRrerun
     remake_fixed_sines_tb
     cd(fullfile(rootpathHR))
 else
@@ -66,7 +66,7 @@ end
 clearvars
 getHRplotParams
 
-if bodererun
+if HRrerun
     remake_fixed_sines_ea
     cd(fullfile(rootpathHR))
 else

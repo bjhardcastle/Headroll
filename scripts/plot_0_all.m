@@ -1,4 +1,4 @@
-plot_1b_chirp_timeseries
+plot_1_chirp_timeseries
 plot_2a_cfs_cycles
 plot_2b_all_slipspeed
 plot_3_all_bode

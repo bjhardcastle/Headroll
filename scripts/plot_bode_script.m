@@ -1,3 +1,4 @@
+% don't call this script directly: run from 'plot_3_all_bode'
 plotname = 'bode';
 
 if exist('..\mat\bodestats.mat','file')
@@ -158,7 +159,7 @@ if ~bodesubplots
     set(gca,'Position',[curraxpos(1)-0.5 curraxpos(2)-0.25 curraxpos(3) curraxpos(4)])
         set(gca,'color',[1 1 1 0]);
 
-    if bodeprintflag
+    if HRprintflag
         savename = [plotnames.(plotname) '_' flyname '_gain'];
             
             if bode_rel_first
@@ -315,7 +316,7 @@ end
 
 save('..\mat\bodestats.mat','bodestats');
 
-if bodeprintflag
+if HRprintflag
     savename = [plotnames.(plotname) '_' flyname '_phase'];
     if bode_rel_first
         savename = [savename '_rel_first'];

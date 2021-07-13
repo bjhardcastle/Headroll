@@ -3,7 +3,6 @@ clear all
 getHRplotParams
 % or manually: bodefilterflag = 0;
 
-
 flies = [2,3,4,5,6,7,8]; % flies 9 & 10 weren't flying well; Problem with fly1 at 1Hz pr
 stimfreqs = [0.03,0.06,0.1,0.3,0.6,1,3.003,6.00,10.0,15,20,25];
 freqs = roundn(stimfreqs,-2);
@@ -65,25 +64,14 @@ for flyidx = 1:length(flies)
                     resp_data = data;
                     load([data_path,stim_fname]);
                     stim_data = data;
-                    
-                   %{ 
-                    if length(stim_data)-length(resp_data) ~= 0
-                        
-                        sprintf(['Different lengths: Fly ',num2str(fly),' C',num2str(cidx),' ',num2str(freq),'Hz trial ',num2str(trialidx)])
-                        sprintf(['Resp length ',num2str(length(resp_data)),', Stim length ',num2str(length(stim_data)),''])
-                        
-                       % resp_data(length(resp_data):length(stim_data),1:3)=0;
-                        
-                    end
-                    %}
-                    
+                      
                     % Get reference stim and aligned response data
                     [stim,trimmed_data,aligned_stim,fps] = ea_remove_prestim(stim_data,resp_data,freqs(freqidx),bodecheckplots);
                     aligned_stim = aligned_stim(:,3);
                     
                     data = trimmed_data;
                     %aligned_stim = aligned_stim(:,3);
-
+                    
                     % Clean resp data
                     ea_clean_up;
                     
@@ -91,41 +79,35 @@ for flyidx = 1:length(flies)
                     resp_DC = trimmed_data(:,3);
                     % Remove baseline drift by filtering freqs <0.5Hz
                     if bodefilterflag
-                    dt_s = 1/fps;
-                    f0_hz = 1/dt_s;
-                    fcut_hz = 1;
-                    [b,a] = butterhigh1(fcut_hz/f0_hz);
-                    resp_AC = filtfilt(b,a,resp_DC);
-                    else                   
-                    resp_AC = resp_DC;
+                        dt_s = 1/fps;
+                        f0_hz = 1/dt_s;
+                        fcut_hz = 1;
+                        [b,a] = butterhigh1(fcut_hz/f0_hz);
+                        resp_AC = filtfilt(b,a,resp_DC);
+                    else
+                        resp_AC = resp_DC;
                     end
                     
                     % Find offset of response baseline
                     os = mean(resp_AC);
                     resp = resp_AC - os;
                     
-                                         % relative response:
-                            % Thorax roll - head roll
-                            rel_resp = -(aligned_stim - resp);
-                            % Smooth response
-                            rel_resp = smooth(rel_resp,8);
-                            
-                            % abs response:
-                            % Smooth response
-                            resp = smooth(resp,8);
-                            
-                            if bode_rel_first
-                               resp_used = rel_resp;
-                            else
-                                resp_used = resp;
-                            end
+                    % relative response:
+                    % Thorax roll - head roll
+                    rel_resp = -(aligned_stim - resp);
+                    % Smooth response
+                    rel_resp = smooth(rel_resp,8);
                     
-                    %                         eval(strcat('headroll.fly',num2str(flyidx),'.cond',num2str(cidx),'.freq',num2str(floor(freqs(freqidx))),'.trial(:,',num2str(trialidx),')=rel_resp;'));
-                    %                         eval(strcat('framerates.fly',num2str(flyidx),'.cond',num2str(cidx),'.freq',num2str(floor(freqs(freqidx))),'.trial(:,',num2str(trialidx),')=fps;'));
+                    % abs response:
+                    % Smooth response
+                    resp = smooth(resp,8);
                     
+                    if bode_rel_first
+                        resp_used = rel_resp;
+                    else
+                        resp_used = resp;
+                    end
                     
-                    %                         headroll(flyidx).cond(cidx).freq(freqidx).trial(:,trialidx) = rel_resp;
-                    %
                     headroll(flyidx).cond(cidx).freq(freqidx).trial(:,trialidx) = resp_used;
                     framerates(flyidx).cond(cidx).freq(freqidx).trial(:,trialidx) = fps;
                     stims(flyidx).cond(cidx).freq(freqidx).trial(:,trialidx)= aligned_stim;
@@ -146,20 +128,20 @@ for flyidx = 1:length(flies)
                             stimfreq = 3.003;
                     end
                     if size(stim,1) > size(stim,2)
-                         stim = stim';  
+                        stim = stim';
                     end
                     if size(resp_used,1) > size(resp_used,2)
                         resp_used = resp_used';
                     end
-                   
-                   calc_gain_phase;
-                   
+                    
+                    calc_gain_phase;
+                    
                     
                     resp_gain(flyidx,freqidx,trialidx,cidx) = CL_gain;
                     resp_phase(flyidx,freqidx,trialidx,cidx) = CL_phase;
                     resp_gain_std(flyidx,freqidx,trialidx,cidx) = CL_gain_std;
                     resp_phase_std(flyidx,freqidx,trialidx,cidx) = CL_phase_std;
-                       
+                    
                     % reshape resp to store individual cycles: keep adding
                     % to store all cycles from all trials to the same fly
                     if length(respcycles)<flyidx || length(respcycles(flyidx).cond)<cidx || length(respcycles(flyidx).cond(cidx).freq)<freqidx || isempty(respcycles(flyidx).cond(cidx).freq)
@@ -171,7 +153,7 @@ for flyidx = 1:length(flies)
                         relrespcycles(flyidx).cond(cidx).freq{freqidx} = [relrespcycles(flyidx).cond(cidx).freq{freqidx}, trial_cycles.rel_resp ];
                         stimcycles(flyidx).cond(cidx).freq{freqidx} = [stimcycles(flyidx).cond(cidx).freq{freqidx}, trial_cycles.stim ];
                     end
-                            
+                    
                 else % condition folder doesn't exist
                     trial_nexist_flag = 1;
                     headroll(flyidx).cond(cidx).freq(freqidx).trial(:,trialidx) = NaN;

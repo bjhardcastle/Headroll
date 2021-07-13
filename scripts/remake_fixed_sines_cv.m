@@ -3,11 +3,11 @@ clear all
 getHRplotParams
 % or manually: bodefilterflag = 0;
 
-addpath(cd)
-cd('..\Thesis_data\Blowflies\Sines\Fran2016\Fly Gaze Data\flystab_better_filtering')
-
 fly_array = [9, 10, 12, 14, 17];     % numbers of flies to be included in study (remove fly8, no publishable data)
 f2ly_array = [1:9];
+
+addpath(cd)
+cd('..\Thesis_data\Blowflies\Sines\Fran2016\Fly Gaze Data\flystab_better_filtering')
 
 cond_array(1,:) = [1,3];                     % numbers of conditions to be included
 cond_array(2,:) = [1,3];
@@ -61,7 +61,6 @@ for flyidx = 1:length(flies)
         
         %%%%%%%%% inital setup %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         if flyidx < switchIdx
-%             %{
             % Fran data folder %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             condidx = cond_array(1,cidx);
             
@@ -81,24 +80,16 @@ for flyidx = 1:length(flies)
                     
                     fps = fpsarray(freqidx);
                     % For fly10, there is problem for 1 Hz and C3: The sampling
-                    % frequency / frame rate was as 125 Hz instead of 250 Hz.                                       
+                    % frequency / frame rate was as 125 Hz instead of 250 Hz.
                     if ( fly*10+condidx == 103 ) && (freq == 1)
                         fps = fps/2;
                     end
-                 
+                    
                     
                     % Load raw Labview data: (8 channels)
                     eval(strcat('resp_data = response_',int2str(name_array(2,freqidx+2)),'_1;'));
                     eval(strcat('stim_data = stimulus_',int2str(name_array(2,freqidx+2)),'_1;'));
-             
-%                     try
-%                         
-%                     [stim,trimmed_data,aligned_stim,fps] = cv_remove_prestim(stim_data,resp_data,freqs(freqidx),bodecheckplots);
-%                     
-%                     aligned_stim = aligned_stim(:,3);
-%                     catch
-%                     end
-                     
+                    
                     % Clean stim data
                     data = stim_data;
                     cv_clean_up;
@@ -132,41 +123,41 @@ for flyidx = 1:length(flies)
                     % flip resp and stim for this dataset, so initial
                     % deflection is positive angle
                     if freq ~= 15
-                    resp = -resp;
-                    aligned_stim = -aligned_stim;
+                        resp = -resp;
+                        aligned_stim = -aligned_stim;
                     else
                         resp(1:16)=[];
                         aligned_stim(1:16)=[];
                     end
                     
-                            % relative response:
-                            % Thorax roll - head roll
-                            rel_resp = -(aligned_stim - resp);
-                            % Smooth response
-                            rel_resp = smooth(rel_resp,8);
-                            
-                            % abs response:
-                            % Smooth response
-                            resp = smooth(resp,8);
-                            
-                            if bode_rel_first
-                               resp_used = rel_resp;
-                            else
-                                resp_used = resp;
-                            end
-                            
+                    % relative response:
+                    % Thorax roll - head roll
+                    rel_resp = -(aligned_stim - resp);
+                    % Smooth response
+                    rel_resp = smooth(rel_resp,8);
                     
-
+                    % abs response:
+                    % Smooth response
+                    resp = smooth(resp,8);
+                    
+                    if bode_rel_first
+                        resp_used = rel_resp;
+                    else
+                        resp_used = resp;
+                    end
+                    
+                    
+                    
                     
                     headroll(flyidx).cond(cidx).freq(freqidx).trial(:,trialidx) = resp_used;
                     framerates(flyidx).cond(cidx).freq(freqidx).trial(:,trialidx) = fps;
                     stims(flyidx).cond(cidx).freq(freqidx).trial(:,trialidx) = aligned_stim;
-              
+                    
                     
                     % calculate closed loop gain and phase
                     clear CL_*
                     Fs = fps;
-                 
+                    
                     stim = aligned_stim;
                     if size(stim,1) > size(stim,2)
                         stim = stim';
@@ -174,20 +165,20 @@ for flyidx = 1:length(flies)
                     stimfreq = freq;
                     switch freq
                         case 15
-%                             stimfreq = 15.15;
-                        stimfreq = 15.148;  
+                            %                             stimfreq = 15.15;
+                            stimfreq = 15.148;
                         case 10
-                            stimfreq = 10.01; 
+                            stimfreq = 10.01;
                         case 6
                             stimfreq = 6.006;
-                        case 3 
+                        case 3
                             stimfreq = 3.003;
                     end
                     if size(resp_used,1) > size(resp_used,2)
                         resp_used = resp_used';
                     end
-                       
-             
+                    
+                    
                     calc_gain_phase;
                     
                     
@@ -210,7 +201,6 @@ for flyidx = 1:length(flies)
                     
                 end
             end
-            %}
         else %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             
             % Karin data folder %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -241,14 +231,14 @@ for flyidx = 1:length(flies)
                             resp_data = data;
                             load([data_path,stim_fname]);
                             stim_data = data;
-                                            
-                            if length(stim_data)-length(resp_data) ~= 0                                
+                            
+                            if length(stim_data)-length(resp_data) ~= 0
                                 sprintf(['Different lengths: FlyIdx ',num2str(flyidx),' C',num2str(condidx),' ',num2str(freq),'Hz trial ',num2str(trialidx)])
                                 sprintf(['Resp length ',num2str(length(resp_data)),', Stim length ',num2str(length(stim_data)),''])
                             end
-                                                
+                            
                             [stim,trimmed_data,aligned_stim,fps] = cv_remove_prestim(stim_data,resp_data,freqs(freqidx),bodecheckplots);
-
+                            
                             
                             aligned_stim = aligned_stim(:,3);
                             
@@ -288,7 +278,7 @@ for flyidx = 1:length(flies)
                             resp = smooth(resp,8);
                             
                             if bode_rel_first
-                               resp_used = rel_resp;
+                                resp_used = rel_resp;
                             else
                                 resp_used = resp;
                             end
@@ -309,9 +299,9 @@ for flyidx = 1:length(flies)
                             if size(resp_used,1) > size(resp_used,2)
                                 resp_used = resp_used';
                             end
-                           
+                            
                             calc_gain_phase;
-                          
+                            
                             resp_gain(flyidx,freqidx,trialidx,cidx) = CL_gain;
                             resp_phase(flyidx,freqidx,trialidx,cidx) = CL_phase;
                             resp_gain_std(flyidx,freqidx,trialidx,cidx) = CL_gain_std;
@@ -337,7 +327,7 @@ for flyidx = 1:length(flies)
                             resp_gain(flyidx,freqidx,trialidx,cidx) = NaN;
                             resp_phase(flyidx,freqidx,trialidx,cidx) = NaN;
                             resp_gain_std(flyidx,freqidx,trialidx,cidx) = NaN;
-                            resp_phase_std(flyidx,freqidx,trialidx,cidx) = NaN; 
+                            resp_phase_std(flyidx,freqidx,trialidx,cidx) = NaN;
                         end
                     end
                 end
@@ -363,4 +353,4 @@ else
     save(fullfile(rootpathHR,'..\mat\DATA_cv_gain_phase.mat'),'resp_gain_mean','resp_phase_mean','resp_gain_std','resp_phase_std', 'step_G','stimfreqs');
 end
 
-        
+

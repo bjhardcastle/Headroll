@@ -135,7 +135,6 @@ for chirp_stim = [1,0]
         [t,y] = ode45(@(t,y) model_head(t,y,J,k,c,sY,sYt,sV,sVt,rY,rYt), tspan, y0);
         
         
-%         %{
         figure
         hold off
         plot(sYt,sY,'Color',[0.6,0.6,0.6],'LineWidth',1 )
@@ -149,9 +148,6 @@ for chirp_stim = [1,0]
         %xlim(tspan)
         
         pbaspect([4,1,1])
-        %}
-        
-        
         
         if ~chirp_stim
             % assign for saving fixed_sines data

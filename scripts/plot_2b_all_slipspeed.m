@@ -8,7 +8,7 @@ end
 clearvars
 getHRplotParams
 
-if bodererun
+if HRrerun
     bode_rel_first = 0;
     remake_fixed_sines_cv
     cd(fullfile(rootpathHR))
@@ -40,7 +40,7 @@ end
 clearvars
 getHRplotParams
 
-if bodererun
+if HRrerun
     bode_rel_first = 0;
     remake_fixed_sines_tb
     cd(fullfile(rootpathHR))
@@ -70,7 +70,7 @@ end
 clearvars
 getHRplotParams
 
-if bodererun
+if HRrerun
     bode_rel_first = 0;
     remake_fixed_sines_ea
     cd(fullfile(rootpathHR))

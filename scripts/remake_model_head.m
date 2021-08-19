@@ -96,8 +96,12 @@ for chirp_stim = [1,0]
             
             %%
             chirp_fps = 800;   % 800 | 1000 | 1200 fps available
-            load(['..\Thesis_data\Hoverflies\Aenus_sine_chirp\reference_stim\chirp_' num2str(chirp_fps) '.mat'])
-            %                 figure, plot(linspace(0,10,12000),x)
+            try
+                load(['..\Thesis_data\Hoverflies\Aenus_sine_chirp\reference_stim\chirp_' num2str(chirp_fps) '.mat'])
+            catch
+                load(['..\mat\chirp_' num2str(chirp_fps) '.mat'])
+            end
+                %                 figure, plot(linspace(0,10,12000),x)
             %                 hold on
             %                 plot(linspace(0,10,fps*10),Stim_sin)
             Stim_sin = x;
@@ -152,6 +156,7 @@ for chirp_stim = [1,0]
         if ~chirp_stim
             % assign for saving fixed_sines data
             headroll(1).cond(1).freq(fIdx).trial = y(sYt>0,1);
+            stims(1).cond(1).freq(fIdx).trial = stims(1).cond(1).freq(fIdx).trial(1:length(y(sYt>0,1)));
         else
             
             % assign for saving chirp data
@@ -162,11 +167,11 @@ for chirp_stim = [1,0]
             cond.flies = [];
             cond.stimfreqs = 51;
             
-            load(['..\Thesis_data\Hoverflies\Aenus_sine_chirp\reference_stim\chirp_' num2str(chirp_fps) '.mat'])
+            %load(['..\Thesis_data\Hoverflies\Aenus_sine_chirp\reference_stim\chirp_' num2str(chirp_fps) '.mat'])
             if size(x,1)>size(x,2)
                 x = x';
             end
-            refstim = resample(x,length(y(:,1)),length(x));
+            refstim = resample(x,length(cond.mean),length(x));
         end
     end
     

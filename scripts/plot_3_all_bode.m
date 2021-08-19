@@ -139,7 +139,7 @@ end
 getHRplotParams
 flyname = 'model';
 
-condSelect = [1];
+condSelect = [1,1];
 
 bodecolor_mat = {};
 bodecolor_mat{condSelect(1)} = [0 0 0];

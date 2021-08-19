@@ -42,13 +42,13 @@ for c = 1:length(condSelect)
     cidx = condSelect(end-c+1); % plot in reverse so 'intact' fly data are on top
     
     CLg=squeeze(resp_gain_mean(:,:,:,cidx));
-    N_array = sum(~isnan(CLg));
+    N_array = sum(~isnan(CLg),1);
     if bodeplotdb
         CLg = mag2db(CLg);
     end
     CLgm=nanmean(CLg,1);
         gainVec(length(condSelect)-c+1,:) = CLgm;
-    CLgs = nanstd(CLg,1)./sqrt(N_array);
+    CLgs = nanstd(CLg,[],1)./sqrt(N_array);
     
     % store stats
     c_switch = length(condSelect)-c+1; % conditions are plot in reverse order: store them in the correct order (c1 in row 1, etc)
@@ -182,7 +182,7 @@ for c = 1:length(condSelect)
     
     CLp=squeeze(resp_phase_mean(:,:,:,cidx));
 CLpm = circ_mean(CLp*pi/180,[],1)*180/pi;
-N_array = sum(~isnan(CLp));
+N_array = sum(~isnan(CLp),1);
     if ~bode_rel_first
 %     CLpm(CLpm > 70) = -360+CLpm(CLpm>70);
     else

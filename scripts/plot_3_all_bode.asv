@@ -128,7 +128,7 @@ if modelrerun
 end
 
 if HRrerun
-    remake_fixed_sines_model
+    remake_fixed_sines_ea
     cd(fullfile(rootpathHR))
 elseif bode_rel_first
     load('..\mat\DATA_model_gain_phase_rel_first');
@@ -137,15 +137,19 @@ else
 end
 
 getHRplotParams
-flyname = 'model';
+flyname = 'ea';
 
 condSelect = [1];
 
 bodecolor_mat = {};
-bodecolor_mat{condSelect(1)} = [0 0 0];
-bodecolor_mat{condSelect(2)} = [0 0 0];
+bodecolor_mat{condSelect(1)} = ea_col;
+bodecolor_mat{condSelect(2)} = darkGreyCol;
 
-legCell = {'passive model'};
 
-plot_bode_script
+color_mat = {};
 
+color_mat{condSelect(1)} = [0 0 0];
+color_mat{condSelect(2)} = [0 0 0];
+legCell = {'0.5 gain';'0.5 gain'};
+
+plot_slipspeed_script

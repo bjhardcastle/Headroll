@@ -1,7 +1,10 @@
 % Some parameter values which are common across plots, for ease of making
 % consistent changes
-set(groot,'defaultLineLineJoin','Round')
-set(groot,'defaultPatchLineJoin',get(groot,'defaultLineLineJoin'))
+try
+    set(groot,'defaultLineLineJoin','Round')
+    set(groot,'defaultPatchLineJoin',get(groot,'defaultLineLineJoin'))
+catch
+end
 
 thisfilepath = mfilename('fullpath'); 
 rootpathHR = fullfile(fileparts(thisfilepath));

@@ -11,7 +11,8 @@ if nargin < 1 || isempty(manualSave) || ( manualSave~=0 && manualSave~=1)
 end
 
 if exist(fullfile(cd,'scripts'),'dir')
-    addpath(cd,'scripts');
+    scriptsDir = fullfile(cd,'scripts');
+    addpath(genpath(scriptsDir)); % add with all subfolders
 else
     disp('required ''scripts'' folder not found: DL from original repository')
     return

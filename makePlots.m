@@ -1,6 +1,7 @@
 function makePlots()
 cd(fileparts(mfilename('fullpath'))) % change working directory to this file location
-addToPath(1) % add scripts folder to path
+addToPath(0) % add scripts folder to path, 0 = don't save path
+disp('Remaking plots..')
 plot_0_all % remake all plots and save in 'plots' folder: makes use of options in getHRplotParams.m
 
 function addToPath(manualSave)

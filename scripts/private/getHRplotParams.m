@@ -19,7 +19,7 @@ printpath = fullfile(fileparts(rootpathHR),'plots');
 %% Options applied to all plots
 HRprintflag = 1; % save pdf/png to disk
 errorbardots = 1; % add dots at each datapoint on top of shaded error bar
-HRrerun = 0; % re-run analysis and save data
+HRrerun = 0; % re-run analysis and save data: requires thesis_data folder
 
 %% Plot aesthetics 
 pdfbkgTransparent = 1;

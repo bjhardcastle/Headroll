@@ -14,7 +14,7 @@ if exist('phaseVec','var')
             rndn = -2;
         case 'tb'
             rndn = -1;
-        case'ea'
+        case 'ea'
             rndn = -2;
     end
     

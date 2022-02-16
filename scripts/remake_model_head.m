@@ -10,7 +10,7 @@ getHRplotParams
 
 % Physical parameters
 % m = blowfly head mass: 8mg from (Schilstra & van Hateren 1999)
-m = 8e-5; %kg
+m = 10e-6; %kg
 
 % L = distance between neck axis and centre of mass, approx 0.25mm
 L = 0.00025; %m
@@ -22,7 +22,7 @@ r = 0.002; %m
 J = 2/3*(m*r^2); % for thin-walled spherical shell
 
 % k = torsional spring constant 
-k = 1e-7; %Nm/deg, order of magnitude smaller than Sabatier et al.
+k = 1e-8; %Nm/deg, order of magnitude smaller than Sabatier et al.
 
 % c = torsional damping constant 
 c = 1e-8; %Nmsec/deg, order of magnitude smaller than Sabatier et al.

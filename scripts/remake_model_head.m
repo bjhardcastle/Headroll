@@ -22,10 +22,10 @@ r = 0.002; %m
 J = 2/3*(m*r^2); % for thin-walled spherical shell
 
 % k = torsional spring constant 
-k = 1e-8; %Nm/deg, order of magnitude smaller than Sabatier et al.
+k = 1e-7; %Nm/deg, order of magnitude smaller than Sabatier et al.
 
 % c = torsional damping constant 
-c = 1e-8; %Nmsec/deg, order of magnitude smaller than Sabatier et al.
+c = 1e-9; %Nmsec/deg, order of magnitude smaller than Sabatier et al.
 
 % Stabilization effort :
 head_lag = 0.005; % Constant delay of 5ms (motor system)

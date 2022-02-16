@@ -10,7 +10,7 @@ getHRplotParams
 
 % Physical parameters
 % m = blowfly head mass: 8mg from (Schilstra & van Hateren 1999)
-m = 10e-6; %kg
+m = 8e-6; %kg
 
 % L = distance between neck axis and centre of mass, approx 0.25mm
 L = 0.00025; %m
@@ -22,10 +22,10 @@ r = 0.002; %m
 J = 2/3*(m*r^2); % for thin-walled spherical shell
 
 % k = torsional spring constant 
-k = 1e-8; %Nm/deg, order of magnitude smaller than Sabatier et al.
+k = 1e-7; %Nm/deg, order of magnitude smaller than Sabatier et al.
 
 % c = torsional damping constant 
-c = 1e-9; %Nmsec/deg, order of magnitude smaller than Sabatier et al.
+c = 1e-8; %Nmsec/deg, order of magnitude smaller than Sabatier et al.
 
 % Stabilization effort :
 head_lag = 0.005; % Constant delay of 5ms (motor system)
@@ -35,7 +35,7 @@ stab_gain = 0; % no stabilization effort in passive model
 amp = 30; % +/- stimulus roll angle
 % fps = 800; % for fixed sines only: currently loading reference chirp stim
 
-for chirp_stim = [1,0]
+for chirp_stim = [1]
     headroll = struct;
     stims = struct;
     framerates = struct;

@@ -10,7 +10,7 @@ getHRplotParams
 
 % Physical parameters
 % m = blowfly head mass: 8mg from (Schilstra & van Hateren 1999)
-m = 8e-6; %kg
+m = 8e-5; %kg
 
 % L = distance between neck axis and centre of mass, approx 0.25mm
 L = 0.00025; %m

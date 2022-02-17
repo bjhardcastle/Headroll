@@ -35,7 +35,7 @@ stab_gain = 0; % no stabilization effort in passive model
 amp = 30; % +/- stimulus roll angle
 % fps = 800; % for fixed sines only: currently loading reference chirp stim
 
-for chirp_stim = [1]
+for chirp_stim = [0]
     headroll = struct;
     stims = struct;
     framerates = struct;

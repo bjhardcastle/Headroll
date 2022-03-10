@@ -73,7 +73,10 @@ for flyIdx = 1:size(headroll,2)
                 result(flyIdx,cIdx,fIdx).x_resp = nanmean(respTrialCenters,1); % this is constant
                 result(flyIdx,cIdx,fIdx).n_resp = nanmean(respTrialCts,1);
                 result(flyIdx,cIdx,fIdx).median_resp = nanmedian(respPoolVel);
-                idx = []; [~,idx] = nanmax(result(flyIdx,cIdx,fIdx).n_resp);
+                idx = []; [maxval,~] = nanmax(result(flyIdx,cIdx,fIdx).n_resp); % find mode/peak of distribution
+                % if there are multiple, seperate peaks equal or very close to the max,
+                % take the one with highest slipspeed (the worst performance)
+                idx = find(result(flyIdx,cIdx,fIdx).n_resp >= 0.99*maxval,1,'last');
                 result(flyIdx,cIdx,fIdx).mode_resp = result(flyIdx,cIdx,fIdx).x_resp(idx);
                 %result(flyIdx,cIdx,freqIdx).N = sum(~isnan(respTrialCts(:,1)));
                 
